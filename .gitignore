@@ -17,6 +17,8 @@ Thumbs.db
 
 # Dependencies
 /vendor/
+
+# Node dependencies
 node_modules/
 
 # Archives

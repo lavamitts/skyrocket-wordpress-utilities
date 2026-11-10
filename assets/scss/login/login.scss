@@ -1,0 +1,27 @@
+.login {
+    #login {
+        h1.wp-login-logo {
+            width: 100%;
+
+            a {
+                display: block;
+                width: 100%;
+                height: auto;
+                margin: 0;
+                padding: 0;
+                background: none !important;
+                background-image: none !important;
+                text-indent: 0;
+            }
+        }
+    }
+
+    .swu-login-logo {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: 160px;
+        object-fit: contain;
+        margin: 0 auto;
+    }
+}

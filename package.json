@@ -1,0 +1,25 @@
+{
+  "name": "skyrocket-wordpress-utilities",
+  "version": "1.0.0",
+  "description": "A collection of reusable WordPress enhancements, customisations and utility functions developed by Skyrocket Phytopharma.",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "sass assets/scss:assets/css --style=expanded --no-source-map",
+    "watch:css": "sass --watch assets/scss:assets/css --style=expanded --no-source-map"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lavamitts/skyrocket-wordpress-utilities.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/lavamitts/skyrocket-wordpress-utilities/issues"
+  },
+  "homepage": "https://github.com/lavamitts/skyrocket-wordpress-utilities#readme",
+  "devDependencies": {
+    "sass": "^1.108.1"
+  }
+}

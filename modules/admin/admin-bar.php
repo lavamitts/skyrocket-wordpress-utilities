@@ -1,7 +1,7 @@
 <?php
-add_action('admin_bar_menu', 'add_custom_admin_bar_links', 60);
+add_action('admin_bar_menu', 'swu_add_custom_admin_bar_links', 60);
 
-function add_custom_admin_bar_links($wp_admin_bar)
+function swu_add_custom_admin_bar_links($wp_admin_bar)
 {
     // Only allow users with administrator privileges to see these links
     if (!current_user_can('manage_options')) {
@@ -30,45 +30,47 @@ function add_custom_admin_bar_links($wp_admin_bar)
 
 
 
-    // // Store management heading
-    // $wp_admin_bar->add_node(array(
-    //     'id' => 'custom-store-management',
-    //     'title' => '<strong>Store management</strong>',
-    //     'parent' => $parent,
-    //     'href' => false,
-    // ));
+    if (class_exists('WooCommerce')) {
+        // Store management heading
+        $wp_admin_bar->add_node(array(
+            'id' => 'custom-store-management',
+            'title' => '<strong>Store management</strong>',
+            'parent' => $parent,
+            'href' => false,
+        ));
 
-    // // Add Orders
-    // $wp_admin_bar->add_node(array(
-    //     'id' => 'custom-orders',
-    //     'title' => 'Orders',
-    //     'parent' => $parent,
-    //     'href' => admin_url('admin.php?page=wc-orders'),
-    // ));
+        // Add Orders
+        $wp_admin_bar->add_node(array(
+            'id' => 'custom-orders',
+            'title' => 'Orders',
+            'parent' => $parent,
+            'href' => admin_url('admin.php?page=wc-orders'),
+        ));
 
-    // // Add Products
-    // $wp_admin_bar->add_node(array(
-    //     'id' => 'custom-products',
-    //     'title' => 'Products',
-    //     'parent' => $parent,
-    //     'href' => admin_url('edit.php?post_type=product'),
-    // ));
+        // Add Products
+        $wp_admin_bar->add_node(array(
+            'id' => 'custom-products',
+            'title' => 'Products',
+            'parent' => $parent,
+            'href' => admin_url('edit.php?post_type=product'),
+        ));
 
-    // // Add Product reviews
-    // $wp_admin_bar->add_node(array(
-    //     'id' => 'custom-product-reviews',
-    //     'title' => 'Product reviews',
-    //     'parent' => $parent,
-    //     'href' => admin_url('edit.php?post_type=product&page=product-reviews'),
-    // ));
+        // Add Product reviews
+        $wp_admin_bar->add_node(array(
+            'id' => 'custom-product-reviews',
+            'title' => 'Product reviews',
+            'parent' => $parent,
+            'href' => admin_url('edit.php?post_type=product&page=product-reviews'),
+        ));
 
-    // // Add separator
-    // $wp_admin_bar->add_node(array(
-    //     'id' => 'custom-separator3',
-    //     'title' => '──────────',
-    //     'parent' => $parent,
-    //     'href' => false,
-    // ));
+        // Add separator
+        $wp_admin_bar->add_node(array(
+            'id' => 'custom-separator3',
+            'title' => '──────────',
+            'parent' => $parent,
+            'href' => false,
+        ));
+    }
 
     // Content management heading
     $wp_admin_bar->add_node(array(
@@ -94,13 +96,15 @@ function add_custom_admin_bar_links($wp_admin_bar)
         'href' => admin_url('edit.php'),
     ));
 
-    // Add Events
-    $wp_admin_bar->add_node(array(
-        'id' => 'custom-events',
-        'title' => 'Events',
-        'parent' => $parent,
-        'href' => admin_url('edit.php?post_type=pavilion_event'),
-    ));
+    if (post_type_exists('pavilion_event')) {
+        // Add Events
+        $wp_admin_bar->add_node(array(
+            'id' => 'custom-events',
+            'title' => 'Events',
+            'parent' => $parent,
+            'href' => admin_url('edit.php?post_type=pavilion_event'),
+        ));
+    }
 
     // Add Media
     $wp_admin_bar->add_node(array(
@@ -110,13 +114,15 @@ function add_custom_admin_bar_links($wp_admin_bar)
         'href' => admin_url('upload.php'),
     ));
 
-    // Menus
-    $wp_admin_bar->add_node(array(
-        'id' => 'custom-menus',
-        'title' => 'Menus',
-        'parent' => $parent,
-        'href' => admin_url('nav-menus.php'),
-    ));
+    if (current_theme_supports('menus') || !empty(get_registered_nav_menus())) {
+        // Menus
+        $wp_admin_bar->add_node(array(
+            'id' => 'custom-menus',
+            'title' => 'Menus',
+            'parent' => $parent,
+            'href' => admin_url('nav-menus.php'),
+        ));
+    }
 
     // My Patterns
     $wp_admin_bar->add_node(array(
@@ -163,6 +169,13 @@ function add_custom_admin_bar_links($wp_admin_bar)
             'title' => 'Plugins',
             'parent' => $parent,
             'href' => admin_url('plugins.php'),
+        ));
+
+        $wp_admin_bar->add_node(array(
+            'id' => 'custom-skyrocket-customisations',
+            'title' => 'Skyrocket customisations',
+            'parent' => $parent,
+            'href' => admin_url('options-general.php?page=swu-settings'),
         ));
     }
 }

@@ -1,0 +1,13 @@
+// @use "../variables" as v;
+// @use "../mixins" as m;
+
+#wpadminbar {
+    ul {
+        li {
+            strong {
+                font-weight: bold !important;
+                color: antiquewhite !important;
+            }
+        }
+    }
+}

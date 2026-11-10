@@ -9,7 +9,8 @@ defined('ABSPATH') || exit;
  */
 $modules = [
     'admin/admin-bar.php',
-    // 'admin/admin-menu-order.php',
+    'admin/admin-settings.php',
+    'admin/admin-logo.php',
 ];
 
 /**

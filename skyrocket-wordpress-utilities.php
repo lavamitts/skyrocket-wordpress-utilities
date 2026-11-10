@@ -14,3 +14,9 @@ define('SWU_PATH', plugin_dir_path(__FILE__));
 
 // Load the module loader.
 require_once SWU_PATH . 'includes/loader.php';
+
+define('SWU_URL', plugin_dir_url(__FILE__));
+
+require_once SWU_PATH . 'includes/assets.php';
+
+
