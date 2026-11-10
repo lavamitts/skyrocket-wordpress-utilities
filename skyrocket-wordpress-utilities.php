@@ -9,6 +9,9 @@
 
 defined('ABSPATH') || exit;
 
+// SWU_VERSION is the plugin version constant, used for cache-busting CSS and JavaScript files when you update them.
+define('SWU_VERSION', '1.0.0');
+
 // Plugin directory path.
 define('SWU_PATH', plugin_dir_path(__FILE__));
 

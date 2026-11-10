@@ -2,3 +2,41 @@
   font-weight: bold !important;
   color: antiquewhite !important;
 }
+
+.swu-admin-menu-sortable {
+  max-width: 500px;
+  margin: 20px 0;
+  padding: 0;
+  list-style: none;
+}
+.swu-admin-menu-sortable .swu-admin-menu-order-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin: 0 0 5px;
+  background: #fff;
+  border: 1px solid #c3c4c7;
+  border-radius: 3px;
+}
+.swu-admin-menu-sortable .swu-menu-order-handle {
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  color: #787c82;
+}
+.swu-admin-menu-sortable .swu-menu-order-handle:active {
+  cursor: grabbing;
+}
+.swu-admin-menu-sortable .swu-menu-order-handle .dashicons {
+  font-size: 20px;
+}
+.swu-admin-menu-sortable .swu-menu-order-label {
+  font-weight: 500;
+}
+.swu-admin-menu-sortable .swu-admin-menu-order-placeholder {
+  height: 40px;
+  margin-bottom: 5px;
+  background: #f0f0f1;
+  border: 1px dashed #8c8f94;
+}

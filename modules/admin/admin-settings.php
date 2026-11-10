@@ -40,24 +40,41 @@ add_action('admin_init', 'swu_register_settings');
 
 
 /**
- * Sanitize plugin options.
- *
- * @param mixed $input Submitted settings.
- * @return array
+ * Sanitize plugin settings.
  */
+
 function swu_sanitize_options($input)
 {
-    $options = [];
+    $input = is_array($input) ? wp_unslash($input) : [];
 
-    if (is_array($input)) {
-        $options['login_logo_id'] = absint(
-            $input['login_logo_id'] ?? 0
-        );
+    $options = get_option('swu_options', []);
+
+    if (!is_array($options)) {
+        $options = [];
+    }
+
+    // Login logo.
+    if (array_key_exists('login_logo_id', $input)) {
+        $options['login_logo_id'] = absint($input['login_logo_id']);
+    }
+
+    // Admin menu order.
+    if (isset($input['admin_menu_order']) && is_array($input['admin_menu_order'])) {
+        $menu_order = [];
+
+        foreach ($input['admin_menu_order'] as $slug) {
+            $slug = sanitize_text_field($slug);
+
+            if ($slug !== '' && !in_array($slug, $menu_order, true)) {
+                $menu_order[] = $slug;
+            }
+        }
+
+        $options['admin_menu_order'] = $menu_order;
     }
 
     return $options;
 }
-
 
 /**
  * Render the plugin settings page.
@@ -134,6 +151,20 @@ function swu_settings_enqueue_assets($hook)
         SWU_URL . 'assets/js/admin-settings.js',
         ['jquery'],
         filemtime(SWU_PATH . 'assets/js/admin-settings.js'),
+        true
+    );
+
+    // Load WordPress's bundled sortable functionality.
+    wp_enqueue_script('jquery-ui-sortable');
+
+    // Load the menu ordering script.
+    $menu_order_js = SWU_PATH . 'assets/js/admin-menu-order.js';
+
+    wp_enqueue_script(
+        'swu-admin-menu-order',
+        SWU_URL . 'assets/js/admin-menu-order.js',
+        ['jquery', 'jquery-ui-sortable'],
+        file_exists($menu_order_js) ? filemtime($menu_order_js) : SWU_VERSION,
         true
     );
 }
