@@ -4,7 +4,7 @@
 
 - Added custom WordPress administration bar content
 
-## 1.0.1 - Additional admin functinality
+## 1.0.1 - Additional admin functionality
 
 - Added WordPress login screen custom logo management
 - Added WordPress left hand main menu sequence customisation
