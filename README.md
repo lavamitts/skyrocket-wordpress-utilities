@@ -38,11 +38,15 @@ Register each module in `includes/loader.php`.
 Use the `swu_` prefix for global functions to avoid
 conflicts with WordPress and other plugins.
 
-# CSS build
+## CSS build
 
 Run this ...
 
 `npm run watch:css`
+
+## Builds
+
+`./tools/build-release-zip.sh`
 
 ## Versioning
 
