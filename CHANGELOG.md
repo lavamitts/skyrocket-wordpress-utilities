@@ -16,4 +16,12 @@
 
 ## 1.0.2 - Addition of self-update functionality
 
-- Added WordPress login screen custom logo management
+- Self-update preparation
+
+## 1.0.3 - Correctly added vendor files
+
+- Self-update permitted
+
+## 1.0.4 - Version testing
+
+- Version testing
