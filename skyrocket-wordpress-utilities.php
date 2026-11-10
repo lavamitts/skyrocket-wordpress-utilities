@@ -46,7 +46,7 @@ function swu_init_update_checker()
 
     // Initialise the GitHub update checker.
     $update_checker = \YahnisElsts\PluginUpdateChecker\v6\PucFactory::buildUpdateChecker(
-        'https://github.com/YOUR-GITHUB-USERNAME/skyrocket-wordpress-utilities/',
+        'https://github.com/lavamitts/skyrocket-wordpress-utilities/',
         __FILE__,
         'skyrocket-wordpress-utilities'
     );
