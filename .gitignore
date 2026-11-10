@@ -16,7 +16,8 @@ Thumbs.db
 *.old
 
 # Dependencies
-/vendor/
+/vendor/*
+!/vendor/plugin-update-checker/
 
 # Node dependencies
 node_modules/
