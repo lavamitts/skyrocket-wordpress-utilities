@@ -13,3 +13,7 @@
 - Prioritise pages if the list of entities when searching for URLs in the admin
 - Extend the categories model to present a different on page title to the one used in post meta and slugs
 - Extend the page and post model to permit an override to the breadcrumb text
+
+## 1.0.2 - Addition of self-update functionality
+
+- Added WordPress login screen custom logo management
