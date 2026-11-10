@@ -1,0 +1,25 @@
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.log
+*.bak
+*.old
+
+# Dependencies
+/vendor/
+node_modules/
+
+# Archives
+*.zip
+*.tar
+*.gz
