@@ -148,11 +148,11 @@ fi
 # --------------------------------------------------
 
 DIST_DIR="${PLUGIN_ROOT}/dist"
-ZIP_FILE="${DIST_DIR}/${PLUGIN_SLUG}-${VERSION}.zip"
+ZIP_FILE="${DIST_DIR}/${PLUGIN_SLUG}.zip"
 
 mkdir -p "$DIST_DIR"
 
-# Remove any previous ZIP for this version.
+# Remove any previous ZIP.
 rm -f "$ZIP_FILE"
 
 echo "Building plugin release..."
@@ -164,18 +164,22 @@ echo
 TEMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TEMP_DIR"' EXIT
 
-# Export repository tree to the temp directory
-git archive --format=tar HEAD | tar -x -C "$TEMP_DIR"
+# Create a subdirectory inside temp matching the plugin slug for proper WordPress structure
+STAGING_DIR="${TEMP_DIR}/${PLUGIN_SLUG}"
+mkdir -p "$STAGING_DIR"
+
+# Export repository tree to the staging directory
+git archive --format=tar HEAD | tar -x -C "$STAGING_DIR"
 
 # Purge non-English localization files (.po and .mo)
 echo "Cleaning up translation files..."
 echo
-find "${TEMP_DIR}" -type f \( -name "*.po" -o -name "*.mo" \) -delete
+find "${STAGING_DIR}" -type f \( -name "*.po" -o -name "*.mo" \) -delete
 
-# Pack the cleaned staging directory into the final release ZIP
+# Pack the staging directory into the final release ZIP (outputting skyrocket-wordpress-utilities.zip)
 (
     cd "$TEMP_DIR"
-    zip -r -q "$ZIP_FILE" .
+    zip -r -q "$ZIP_FILE" "$PLUGIN_SLUG"
 )
 
 echo -e "${GREEN}Release ZIP created successfully${RESET}:\n"
