@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # Stop if anything goes wrong.
@@ -61,7 +60,7 @@ if [[ -z "$VERSION" ]]; then
 fi
 
 # --------------------------------------------------
-# Build release ZIP
+# Build release ZIP (with translation cleanup)
 # --------------------------------------------------
 
 DIST_DIR="${PLUGIN_ROOT}/dist"
@@ -78,11 +77,22 @@ echo "Plugin:  ${PLUGIN_SLUG}"
 echo "Version: ${VERSION}"
 echo
 
-git archive \
-    --format=zip \
-    --prefix="${PLUGIN_SLUG}/" \
-    HEAD \
-    -o "$ZIP_FILE"
+# Create a secure temporary staging directory
+TEMP_DIR="$(mktemp -d)"
+trap 'rm -rf "$TEMP_DIR"' EXIT
+
+# Export repository tree to the temp directory
+git archive --format=tar HEAD | tar -x -C "$TEMP_DIR"
+
+# Purge non-English localization files (.po and .mo)
+echo "Cleaning up translation files..."
+find "${TEMP_DIR}" -type f \( -name "*.po" -o -name "*.mo" \) -delete
+
+# Pack the cleaned staging directory into the final release ZIP
+(
+    cd "$TEMP_DIR"
+    zip -r -q "$ZIP_FILE" .
+)
 
 echo "Release ZIP created successfully:"
 echo "$ZIP_FILE"
