@@ -22,6 +22,8 @@ $modules = [
 
     'search/exclude-hidden-pages-from-live-search.php',
     'search/live-search-columnar-display.php',
+
+    'ui/body-add-slug-class.php',
 ];
 
 /**

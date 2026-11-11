@@ -36,3 +36,7 @@
 
 - Checks the plugin's PHP file to ensure that the versions match in the plugin itself and in the SWU_VERSION constant
 - Checks the CHANGELOG.md file for a relevant update matching the plugin's PHP file
+
+## 1.0.7 - Adds a class to the body to match the page or post's slug
+
+- Allows for fine-controlled CSS if needed
