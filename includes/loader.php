@@ -19,6 +19,9 @@ $modules = [
     'admin/admin-extend-categories-model.php',
     'admin/admin-extend-pages-model.php',
     'admin/admin-extend-posts-model.php',
+
+    'search/exclude-hidden-pages-from-live-search.php',
+    'search/live-search-columnar-display.php',
 ];
 
 /**

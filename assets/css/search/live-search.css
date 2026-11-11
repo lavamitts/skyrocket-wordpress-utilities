@@ -1,0 +1,31 @@
+#search-modal .ct-search-form,
+#search-modal .ct-search-results {
+    max-width: none;
+    width: 100%;
+}
+.bbc-ls-columns {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(var(--bbc-cols, 1), minmax(0, 1fr));
+    gap: 24px;
+    width: 100%;
+}
+
+.bbc-ls-column {
+    min-width: 0;
+
+    a.ct-search-item {
+        /* background-color: darkblue; */
+        margin-bottom: 0.5rem;
+
+        &:before {
+            content: "●";
+        }
+    }
+}
+
+@media (max-width: 689px) {
+    .bbc-ls-columns {
+        grid-template-columns: 1fr; /* stack on phones */
+    }
+}

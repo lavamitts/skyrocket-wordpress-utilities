@@ -25,3 +25,9 @@
 ## 1.0.4 - Version testing
 
 - Version testing
+
+## 1.0.5 - Release and search management
+
+- Automatically strips non-english language files from the vendor-supplied Plugin Update Checker to remove bloat from distribution
+- Adds in columnar search to live search under blocksy
+- Excludes pages hidden by Slim SEO from live search

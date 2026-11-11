@@ -4,6 +4,7 @@
  * Description: A collection of reusable WordPress enhancements and utilities.
  * Version: 1.0.5
  * Author: Biddenham Society
+ * Author URI: https://biddenham.org.uk/
  * Text Domain: skyrocket-wordpress-utilities
  */
 
@@ -15,6 +16,9 @@ define('SWU_VERSION', '1.0.1');
 // Plugin directory path and URL.
 define('SWU_PATH', plugin_dir_path(__FILE__));
 define('SWU_URL', plugin_dir_url(__FILE__));
+
+// Helper functions
+require_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
 
 // Token loaded
 require_once SWU_PATH . 'includes/token.php';
