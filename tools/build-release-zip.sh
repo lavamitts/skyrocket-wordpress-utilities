@@ -148,11 +148,12 @@ fi
 # --------------------------------------------------
 
 DIST_DIR="${PLUGIN_ROOT}/dist"
-ZIP_FILE="${DIST_DIR}/${PLUGIN_SLUG}.zip"
+# ZIP file retains the version number (e.g., skyrocket-wordpress-utilities-1.0.5.zip)
+ZIP_FILE="${DIST_DIR}/${PLUGIN_SLUG}-${VERSION}.zip"
 
 mkdir -p "$DIST_DIR"
 
-# Remove any previous ZIP.
+# Remove any previous ZIP for this version.
 rm -f "$ZIP_FILE"
 
 echo "Building plugin release..."
@@ -164,11 +165,12 @@ echo
 TEMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TEMP_DIR"' EXIT
 
-# Create a subdirectory inside temp matching the plugin slug for proper WordPress structure
+# Create a subdirectory inside temp matching the unversioned plugin slug 
+# so that WordPress installs it into a clean folder without version numbers.
 STAGING_DIR="${TEMP_DIR}/${PLUGIN_SLUG}"
 mkdir -p "$STAGING_DIR"
 
-# Export repository tree to the staging directory
+# Export repository tree directly to the unversioned staging directory
 git archive --format=tar HEAD | tar -x -C "$STAGING_DIR"
 
 # Purge non-English localization files (.po and .mo)
@@ -176,7 +178,7 @@ echo "Cleaning up translation files..."
 echo
 find "${STAGING_DIR}" -type f \( -name "*.po" -o -name "*.mo" \) -delete
 
-# Pack the staging directory into the final release ZIP (outputting skyrocket-wordpress-utilities.zip)
+# Pack only the unversioned plugin slug directory into the versioned release ZIP
 (
     cd "$TEMP_DIR"
     zip -r -q "$ZIP_FILE" "$PLUGIN_SLUG"
