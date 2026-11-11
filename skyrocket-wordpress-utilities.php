@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Skyrocket WordPress Utilities
  * Description: A collection of reusable WordPress enhancements and utilities.
- * Version: 1.0.5
+ * Version: 1.0.6
  * Author: Biddenham Society
  * Author URI: https://biddenham.org.uk/
  * Text Domain: skyrocket-wordpress-utilities
@@ -11,7 +11,7 @@
 defined('ABSPATH') || exit;
 
 // Plugin version constant, used for cache-busting CSS and JavaScript.
-define('SWU_VERSION', '1.0.1');
+define('SWU_VERSION', '1.0.6');
 
 // Plugin directory path and URL.
 define('SWU_PATH', plugin_dir_path(__FILE__));
@@ -57,5 +57,10 @@ function swu_init_update_checker()
 
     // Authenticate with the private GitHub repository.
     $update_checker->setAuthentication(SWU_GITHUB_TOKEN);
+
+    // Explicitly typecast for IDE static analysis
+    /** @var \YahnisElsts\PluginUpdateChecker\v6p0\Vcs\GitHubApi $vcsApi */
+    $vcsApi = $update_checker->getVcsApi();
+    $vcsApi->enableReleaseAssets();
 }
 add_action('plugins_loaded', 'swu_init_update_checker');

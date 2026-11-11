@@ -31,3 +31,8 @@
 - Automatically strips non-english language files from the vendor-supplied Plugin Update Checker to remove bloat from distribution
 - Adds in columnar search to live search under blocksy
 - Excludes pages hidden by Slim SEO from live search
+
+## 1.0.6 - Enhanced distribution script
+
+- Checks the plugin's PHP file to ensure that the versions match in the plugin itself and in the SWU_VERSION constant
+- Checks the CHANGELOG.md file for a relevant update matching the plugin's PHP file
