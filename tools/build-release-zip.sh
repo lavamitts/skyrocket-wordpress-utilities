@@ -169,6 +169,7 @@ git archive --format=tar HEAD | tar -x -C "$TEMP_DIR"
 
 # Purge non-English localization files (.po and .mo)
 echo "Cleaning up translation files..."
+echo
 find "${TEMP_DIR}" -type f \( -name "*.po" -o -name "*.mo" \) -delete
 
 # Pack the cleaned staging directory into the final release ZIP
@@ -177,6 +178,6 @@ find "${TEMP_DIR}" -type f \( -name "*.po" -o -name "*.mo" \) -delete
     zip -r -q "$ZIP_FILE" .
 )
 
-echo "Release ZIP created successfully:"
+echo -e "${GREEN}Release ZIP created successfully${RESET}:\n"
 echo "$ZIP_FILE"
 echo
