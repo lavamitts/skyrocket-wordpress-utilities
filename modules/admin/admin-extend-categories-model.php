@@ -25,33 +25,131 @@ const SWU_CATEGORY_PRIORITY_META = '_swu_category_display_priority';
 /**
  * Field definitions, keyed by taxonomy.
  */
+/**
+ * Field definitions, keyed by taxonomy.
+ * Labels and descriptions are translated lazily inside an init hook or execution context.
+ */
 function swu_term_fields(): array
 {
     return [
         'category' => [
             [
                 'key' => SWU_CATEGORY_TITLE_META,
-                'label' => __('Custom title override', 'default'),
+                'label' => 'Custom title override',
                 'type' => 'text',
-                'description' => __('Optional. Provide a custom heading for this category archive page.', 'default'),
+                'description' => 'Optional. Provide a custom heading for this category archive page.',
+                'translate' => ['label', 'description'],
+                'domain' => 'default',
             ],
         ],
         'product_cat' => [
             [
                 'key' => SWU_CATEGORY_SHORT_DESC_META,
-                'label' => __('Short Description', 'woocommerce'),
+                'label' => 'Short Description',
                 'type' => 'textarea',
-                'description' => __('A brief description displayed on product category listings.', 'woocommerce'),
+                'description' => 'A brief description displayed on product category listings.',
+                'translate' => ['label', 'description'],
+                'domain' => 'woocommerce',
             ],
             [
                 'key' => SWU_CATEGORY_PRIORITY_META,
-                'label' => __('Display Priority', 'woocommerce'),
+                'label' => 'Display Priority',
                 'type' => 'number',
-                'description' => __('Controls the display order of this category. Lower numbers appear first. 0 is the highest priority.', 'woocommerce'),
+                'description' => 'Controls the display order of this category. Lower numbers appear first. 0 is the highest priority.',
+                'translate' => ['label', 'description'],
+                'domain' => 'woocommerce',
             ],
         ],
     ];
 }
+
+/**
+ * Helper to get translated field properties safely after init.
+ */
+function swu_get_field_label(array $field): string
+{
+    $label = $field['label'];
+    $domain = $field['domain'] ?? 'default';
+    return __($label, $domain);
+}
+
+function swu_get_field_description(array $field): string
+{
+    $desc = $field['description'];
+    $domain = $field['domain'] ?? 'default';
+    return __($desc, $domain);
+}
+
+/**
+ * Register hooks for every taxonomy once WordPress has initialized.
+ */
+add_action('init', function () {
+    foreach (swu_term_fields() as $swu_taxonomy => $swu_fields) {
+
+        // "Add New" screen.
+        add_action("{$swu_taxonomy}_add_form_fields", function () use ($swu_fields) {
+            foreach ($swu_fields as $field) {
+                $id = 'swu_term_meta_' . $field['key'];
+                $value = $field['type'] === 'number' ? '0' : '';
+                ?>
+                <div class="form-field">
+                    <label for="<?php echo esc_attr($id); ?>">
+                        <?php echo esc_html($field['label']); ?>
+                    </label>
+
+                    <?php swu_render_term_field($field, $value); ?>
+
+                    <p class="description">
+                        <?php echo esc_html($field['description']); ?>
+                    </p>
+                </div>
+                <?php
+            }
+        });
+
+        // "Edit" screen.
+        add_action("{$swu_taxonomy}_edit_form_fields", function ($term) use ($swu_fields) {
+            foreach ($swu_fields as $field) {
+                $id = 'swu_term_meta_' . $field['key'];
+
+                $value = (string) get_term_meta(
+                    $term->term_id,
+                    $field['key'],
+                    true
+                );
+
+                if ($field['type'] === 'number' && $value === '') {
+                    $value = '0';
+                }
+                ?>
+                <tr class="form-field">
+                    <th scope="row">
+                        <label for="<?php echo esc_attr($id); ?>">
+                            <?php echo esc_html($field['label']); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <?php swu_render_term_field($field, $value); ?>
+
+                        <p class="description">
+                            <?php echo esc_html($field['description']); ?>
+                        </p>
+                    </td>
+                </tr>
+                <?php
+            }
+        });
+
+        // Saving.
+        add_action("created_{$swu_taxonomy}", function ($term_id) use ($swu_taxonomy) {
+            swu_save_term_fields((int) $term_id, $swu_taxonomy, 'add');
+        });
+
+        add_action("edited_{$swu_taxonomy}", function ($term_id) use ($swu_taxonomy) {
+            swu_save_term_fields((int) $term_id, $swu_taxonomy, 'edit');
+        });
+    }
+});
 
 /**
  * Render a single field input.
