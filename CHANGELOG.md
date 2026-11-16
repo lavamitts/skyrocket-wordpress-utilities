@@ -44,3 +44,7 @@
 ## 1.0.8 - Replace 3rd party plugin updater with bespoke plugin
 
 - Replace 3rd party plugin updater with bespoke plugin
+
+## 1.0.9 - Correct repo name in script updater
+
+- Correct repo name in script updater
