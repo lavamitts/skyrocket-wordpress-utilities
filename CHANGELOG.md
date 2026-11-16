@@ -40,3 +40,7 @@
 ## 1.0.7 - Adds a class to the body to match the page or post's slug
 
 - Allows for fine-controlled CSS if needed
+
+## 1.0.8 - Replace 3rd party plugin updater with bespoke plugin
+
+- Replace 3rd party plugin updater with bespoke plugin
