@@ -17,50 +17,26 @@ define('SWU_VERSION', '1.0.7');
 define('SWU_PATH', plugin_dir_path(__FILE__));
 define('SWU_URL', plugin_dir_url(__FILE__));
 
+
+// GitHub updater configuration.
+$github_updater_config = [
+    'username' => 'lavamitts',
+    'repository' => 'skyrocket-script-manager',
+    'plugin_file' => __FILE__,
+];
+
+// Updater code
+require_once __DIR__ . '/includes/plugin-updater.php';
+
+
+// Remove the temporary configuration variable.
+unset($github_updater_config);
+
 // Helper functions
 require_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
-
-// Token loaded
-require_once SWU_PATH . 'includes/token.php';
 
 // Load the module loader.
 require_once SWU_PATH . 'includes/loader.php';
 
-// Load asset management.
+// Load CSS assets
 require_once SWU_PATH . 'includes/assets.php';
-
-/**
- * Initialise the GitHub plugin update checker.
- */
-function swu_init_update_checker()
-{
-    // Require a GitHub access token.
-    if (!defined('SWU_GITHUB_TOKEN') || SWU_GITHUB_TOKEN === '') {
-        return;
-    }
-
-    // Check that the updater library is available.
-    $updater_file = SWU_PATH . 'vendor/plugin-update-checker/plugin-update-checker.php';
-
-    if (!file_exists($updater_file)) {
-        return;
-    }
-
-    require_once $updater_file;
-
-    // Initialise the GitHub update checker.
-    $update_checker = \YahnisElsts\PluginUpdateChecker\v6\PucFactory::buildUpdateChecker(
-        'https://github.com/lavamitts/skyrocket-wordpress-utilities/',
-        __FILE__,
-        'skyrocket-wordpress-utilities'
-    );
-
-    // Authenticate with the private GitHub repository.
-    $update_checker->setAuthentication(SWU_GITHUB_TOKEN);
-
-    // Explicitly typecast for IDE static analysis
-    /** @var \YahnisElsts\PluginUpdateChecker\v6p0\Vcs\GitHubApi $vcsApi */
-    $vcsApi = $update_checker->getVcsApi();
-    $vcsApi->enableReleaseAssets();
-}
-add_action('plugins_loaded', 'swu_init_update_checker');

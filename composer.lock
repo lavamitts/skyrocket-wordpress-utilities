@@ -1,0 +1,52 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "eeba6e0ab0d3cd7c3b5b2117436bf472",
+    "packages": [],
+    "packages-dev": [
+        {
+            "name": "lavamitts/github-plugin-updater",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lavamitts/github-plugin-updater.git",
+                "reference": "9b275a3b4015646d1a65a59af64ab85a5310e007"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lavamitts/github-plugin-updater/zipball/9b275a3b4015646d1a65a59af64ab85a5310e007",
+                "reference": "9b275a3b4015646d1a65a59af64ab85a5310e007",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Skyrocket\\GitHubUpdater\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Minimal single-file GitHub release asset updater for WordPress plugins.",
+            "support": {
+                "source": "https://github.com/lavamitts/github-plugin-updater/tree/1.0.2",
+                "issues": "https://github.com/lavamitts/github-plugin-updater/issues"
+            },
+            "time": "2026-11-16T21:26:02+00:00"
+        }
+    ],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.11.0"
+}
