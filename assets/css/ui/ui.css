@@ -1,0 +1,18 @@
+.ct-sidebar .wp-block-woocommerce-product-categories ul.wc-block-product-categories-list li.wc-block-product-categories-list-item {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.ct-sidebar .wp-block-woocommerce-product-categories .current-cat {
+  font-weight: bold;
+}
+.ct-sidebar .wp-block-woocommerce-product-categories .current-cat li {
+  font-weight: normal;
+}
+
+.policy-list {
+  list-style: none;
+  padding-left: 0;
+}
+.policy-list li {
+  margin-bottom: 1rem;
+}

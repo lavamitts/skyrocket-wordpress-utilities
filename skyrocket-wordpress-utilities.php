@@ -7,7 +7,7 @@
  * Author URI: https://biddenham.org.uk/
  * Text Domain: skyrocket-wordpress-utilities
  */
-
+// return;
 defined('ABSPATH') || exit;
 
 // Plugin version constant, used for cache-busting CSS and JavaScript.

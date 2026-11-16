@@ -1,4 +1,5 @@
-#wpadminbar ul li strong {
+#wpadminbar ul li strong,
+#wp-admin-bar-site-name-default ul li strong {
   font-weight: bold !important;
   color: antiquewhite !important;
 }

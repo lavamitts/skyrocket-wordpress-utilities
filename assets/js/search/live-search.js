@@ -1,6 +1,5 @@
 (function () {
   const cfg = window.bbcLiveSearch;
-  console.log("running live search extension");
   if (!cfg) return;
 
   const cache = new Map();

@@ -141,20 +141,20 @@ function swu_add_custom_admin_bar_links($wp_admin_bar)
             'href' => false,
         ));
 
-        // Customise
-        $wp_admin_bar->add_node(array(
-            'id' => 'custom-customize',
-            'title' => 'Customise theme',
-            'parent' => $parent,
-            'href' => admin_url('customize.php?return=%2Fwp-admin%2Findex.php'),
-        ));
-
         // Admin heading
         $wp_admin_bar->add_node(array(
             'id' => 'custom-admin',
             'title' => '<strong>Admin tools</strong>',
             'parent' => $parent,
             'href' => false,
+        ));
+
+        // Customise
+        $wp_admin_bar->add_node(array(
+            'id' => 'custom-customize',
+            'title' => 'Customise theme',
+            'parent' => $parent,
+            'href' => admin_url('customize.php?return=%2Fwp-admin%2Findex.php'),
         ));
 
         $wp_admin_bar->add_node(array(

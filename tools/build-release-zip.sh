@@ -13,6 +13,9 @@ MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 
+echo "Helllo"
+exit
+
 # Bold colours
 BOLD_RED='\033[1;31m'
 BOLD_GREEN='\033[1;32m'
@@ -34,22 +37,26 @@ echo -e "${GREEN}GENERATING DISTRIBUTION SET${RESET}\n"
 set -euo pipefail
 
 # --------------------------------------------------
-# Configuration
-# --------------------------------------------------
-
-PLUGIN_SLUG="skyrocket-wordpress-utilities"
-MAIN_FILE="${PLUGIN_SLUG}.php"
-CHANGELOG_FILE="CHANGELOG.md"
-
-# --------------------------------------------------
-# Locate plugin root
+# Locate plugin root & configuration
 # --------------------------------------------------
 
 # This script lives in /tools, so move one directory up.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
+# Derive PLUGIN_SLUG from the name of the parent folder
+PLUGIN_SLUG="$(basename "$PLUGIN_ROOT")"
+MAIN_FILE="${PLUGIN_SLUG}.php"
+CHANGELOG_FILE="CHANGELOG.md"
+
 cd "$PLUGIN_ROOT"
+
+# Verify that the matching PHP file exists in the plugin root
+if [[ ! -f "$MAIN_FILE" ]]; then
+    echo -e "${RED}Error:${RESET} Could not find the plugin file '${MAIN_FILE}' matching the folder name '${PLUGIN_SLUG}'."
+    echo "Please ensure the plugin folder name matches the main plugin PHP filename."
+    exit 1
+fi
 
 # --------------------------------------------------
 # Check Git repository
@@ -57,11 +64,6 @@ cd "$PLUGIN_ROOT"
 
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "Error: Plugin directory is not a Git repository."
-    exit 1
-fi
-
-if [[ ! -f "$MAIN_FILE" ]]; then
-    echo "Error: Could not find ${MAIN_FILE}."
     exit 1
 fi
 
@@ -84,13 +86,17 @@ if [[ -z "$VERSION" ]]; then
     exit 1
 fi
 
-# 2. Extract version from the SWU_VERSION constant definition
+# 2. Automatically derive the PHP constant name from the slug (e.g., my-plugin -> MY_PLUGIN_VERSION)
+# Converts hyphens to underscores and changes to uppercase
+SLUG_CONSTANT_PREFIX=$(echo "$PLUGIN_SLUG" | tr '-' '_' | tr '[:lower:]' '[:upper:]')
+CONST_NAME="${SLUG_CONSTANT_PREFIX}_VERSION"
+
 CONST_VERSION=$(sed -nE \
-    "s/^[[:space:]]*define\([[:space:]]*['\"]SWU_VERSION[''][[:space:]]*,[[:space:]]*['\"]([^'\"]+)[''][[:space:]]*\).*/\1/p" \
+    "s/^[[:space:]]*define\([[:space:]]*['\"]${CONST_NAME}[''][[:space:]]*,[[:space:]]*['\"]([^'\"]+)[''][[:space:]]*\).*/\1/p" \
     "$MAIN_FILE" | head -n 1)
 
 if [[ -z "$CONST_VERSION" ]]; then
-    echo "Error: Could not determine SWU_VERSION constant from ${MAIN_FILE}."
+    echo "Error: Could not determine ${CONST_NAME} constant from ${MAIN_FILE}."
     exit 1
 fi
 
@@ -98,7 +104,7 @@ fi
 if [[ "$VERSION" != "$CONST_VERSION" ]]; then
     echo -e "Error: ${CYAN}VERSION MISMATCH${RESET} in plugin main PHP file detected!\n"
     echo -e "  - Plugin Header Version:  ${RED}${VERSION}${RESET}"
-    echo -e "  - SWU_VERSION Constant:   ${RED}${CONST_VERSION}${RESET}"
+    echo -e "  - ${CONST_NAME} Constant:   ${RED}${CONST_VERSION}${RESET}"
     echo -e "\nPlease update these so they match before building.\n"
     exit 1
 fi
@@ -108,7 +114,6 @@ fi
 # --------------------------------------------------
 
 # Check if CHANGELOG.md contains an H2 header for this version (e.g., "## 1.0.5 - ...")
-# Regex breakdown: Matches lines starting with "## <version> " followed by any description characters
 if ! grep -qE "^## ${VERSION}[[:space:]]+-" "$CHANGELOG_FILE"; then
     echo -e "Error: ${CYAN}CHANGELOG ENTRY MISSING${RESET} for version ${RED}${VERSION}${RESET}!\n"
     echo -e "Please ensure ${CHANGELOG_FILE} has an H2 entry starting with:\n"
@@ -121,7 +126,7 @@ fi
 # --------------------------------------------------
 
 echo
-printf "You are creating a distribution set for ${CYAN}version ${VERSION}${RESET}.\n\nAre you sure you want to continue? (Y/N): "
+printf "You are creating a distribution set for ${CYAN}version ${VERSION}${RESET} of ${CYAN}${PLUGIN_SLUG}${RESET}.\n\nAre you sure you want to continue? (Y/N): "
 read -n 1 -r
 echo
 echo
@@ -148,7 +153,6 @@ fi
 # --------------------------------------------------
 
 DIST_DIR="${PLUGIN_ROOT}/dist"
-# ZIP file retains the version number (e.g., skyrocket-wordpress-utilities-1.0.5.zip)
 ZIP_FILE="${DIST_DIR}/${PLUGIN_SLUG}-${VERSION}.zip"
 
 mkdir -p "$DIST_DIR"
@@ -166,7 +170,6 @@ TEMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TEMP_DIR"' EXIT
 
 # Create a subdirectory inside temp matching the unversioned plugin slug 
-# so that WordPress installs it into a clean folder without version numbers.
 STAGING_DIR="${TEMP_DIR}/${PLUGIN_SLUG}"
 mkdir -p "$STAGING_DIR"
 

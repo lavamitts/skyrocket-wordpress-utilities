@@ -29,3 +29,6 @@ node_modules/
 
 # Disributions
 /dist/
+
+# Local guidance
+GUIDANCE.md

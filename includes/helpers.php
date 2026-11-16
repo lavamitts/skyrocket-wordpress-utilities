@@ -11,6 +11,14 @@ function pre($text): void
 {
     echo ("<pre>{$text}</pre>");
 }
+function print_array($array): void
+{
+    echo '<pre>';
+    print_r($array);
+    echo '</pre>';
+}
+
+
 
 
 /**
