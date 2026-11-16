@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-error_log("Adding attr desc");
+// error_log("Adding attr desc");
 
 /**
  * WooCommerce Global Attribute Descriptions
