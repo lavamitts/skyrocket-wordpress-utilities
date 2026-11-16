@@ -27,7 +27,7 @@ node_modules/
 *.tar
 *.gz
 
-# Disributions
+# Distributions
 /dist/
 
 # Local guidance
