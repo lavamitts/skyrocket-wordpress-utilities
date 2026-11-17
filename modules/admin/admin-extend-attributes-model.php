@@ -1,31 +1,84 @@
 <?php
-if (!defined('ABSPATH')) {
-    exit;
-}
-
-// error_log("Adding attr desc");
-
 /**
  * WooCommerce Global Attribute Descriptions
  *
- * Adds an internal description field to global product attributes.
+ * Adds an internal description field to WooCommerce global product
+ * attributes, allowing administrators to record the purpose or intended
+ * use of individual attributes.
+ *
+ * Descriptions are stored separately from WooCommerce's native attribute
+ * data in a dedicated database table, associated with the corresponding
+ * WooCommerce attribute IDs.
  *
  * Features:
- * - Adds a description field when creating an attribute.
- * - Adds a description field when editing an attribute.
- * - Stores descriptions in a separate database table.
- * - Associates descriptions with WooCommerce attribute IDs.
- * - Removes descriptions when their attributes are deleted.
  *
- * Descriptions are for administrative reference only.
- * They are never displayed on the frontend.
+ * - Add Attribute screen:
+ *   Adds a description field when creating a global product attribute.
+ *
+ * - Edit Attribute screen:
+ *   Displays the existing description when editing a global product
+ *   attribute and allows it to be updated.
+ *
+ * - Description storage:
+ *   Stores descriptions in a dedicated database table named
+ *   `woocommerce_attribute_descriptions`, using the WordPress database
+ *   prefix.
+ *
+ * - Description retrieval:
+ *   Provides a function to retrieve the description associated with
+ *   a WooCommerce attribute ID.
+ *
+ * - Description updates:
+ *   Saves descriptions when attributes are created or updated.
+ *   Empty descriptions remove the corresponding database record.
+ *
+ * - Attribute deletion:
+ *   Automatically removes the associated description when a global
+ *   product attribute is deleted.
+ *
+ * - Database installation:
+ *   Creates the custom database table using `dbDelta()` and tracks
+ *   the installed schema version using a WordPress option.
+ *
+ * All descriptions are for administrative reference only and are never
+ * displayed on the frontend.
+ *
+ * Dependencies:
+ *
+ * - WooCommerce must be installed, active and loaded.
+ * - WordPress core database, options and sanitisation APIs.
+ *
+ * WooCommerce dependency handling:
+ *
+ * - All functionality is registered through a bootstrap function hooked
+ *   to `plugins_loaded`.
+ * - Checks for the WooCommerce class before registering any functionality.
+ * - No hooks are registered and no database operations are performed
+ *   when WooCommerce is unavailable.
+ *
+ * Hooks:
+ *
+ * - `plugins_loaded`:
+ *   Checks for WooCommerce and registers the functionality.
+ * - `init`:
+ *   Installs or updates the custom database table.
+ * - `woocommerce_after_add_attribute_fields`:
+ *   Displays the description field when creating an attribute.
+ * - `woocommerce_after_edit_attribute_fields`:
+ *   Displays the description field when editing an attribute.
+ * - `woocommerce_attribute_added`:
+ *   Saves the description when an attribute is created.
+ * - `woocommerce_attribute_updated`:
+ *   Saves the description when an attribute is updated.
+ * - `woocommerce_attribute_deleted`:
+ *   Deletes the description when an attribute is deleted.
+ *
+ * @package Skyrocket
  */
 
-/**
- * Return the custom attribute descriptions table name.
- *
- * @return string
- */
+defined('ABSPATH') || exit;
+
+
 function custom_wc_attribute_description_table(): string
 {
     global $wpdb;

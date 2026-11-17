@@ -1,6 +1,71 @@
 <?php
 /**
- * Extend posts with a custom breadcrumb title override field.
+ * Custom Post Breadcrumb Title Override
+ *
+ * Extends standard WordPress posts with an optional custom breadcrumb
+ * title, allowing a shorter or more suitable title to be displayed in
+ * breadcrumb navigation without changing the post's actual title.
+ *
+ * The custom title is stored as WordPress post metadata and is applied
+ * specifically to the final breadcrumb item using Blocksy's breadcrumb
+ * items filter.
+ *
+ * Features:
+ *
+ * - Post editor integration:
+ *   Adds a Breadcrumb override meta box to the WordPress post editing
+ *   screen, allowing an alternative breadcrumb title to be specified.
+ *
+ * - Custom title:
+ *   Provides a text field for entering a shorter breadcrumb label when
+ *   the post's main title is too long or unsuitable for navigation.
+ *
+ * - Metadata storage:
+ *   Stores the custom title against the post using the
+ *   `_post_breadcrumb_title` post meta key.
+ *   Empty values remove the existing metadata rather than storing
+ *   an empty string.
+ *
+ * - Secure saving:
+ *   Verifies the submitted nonce, excludes autosaves and revisions,
+ *   checks the user's post editing capability and sanitises submitted
+ *   text before saving.
+ *
+ * - Breadcrumb integration:
+ *   Uses Blocksy's `blocksy:breadcrumbs:items-array` filter to replace
+ *   the name of the final breadcrumb item with the custom title.
+ *
+ * Behaviour:
+ *
+ * - Only applies to individual standard WordPress post views.
+ * - Only modifies the final breadcrumb item.
+ * - Leaves the original post title and all other breadcrumb items
+ *   unchanged.
+ * - Falls back to the standard breadcrumb title when no custom
+ *   override has been configured.
+ *
+ * Metadata:
+ *
+ * - `_post_breadcrumb_title`:
+ *   Optional custom breadcrumb title associated with a WordPress post.
+ *
+ * Hooks:
+ *
+ * - `add_meta_boxes`:
+ *   Registers the breadcrumb override meta box.
+ *
+ * - `save_post_post`:
+ *   Validates and saves the submitted breadcrumb title.
+ *
+ * - `blocksy:breadcrumbs:items-array`:
+ *   Applies the custom title to the final breadcrumb item.
+ *
+ * Dependencies:
+ *
+ * - WordPress core post metadata and meta box APIs.
+ * - Blocksy theme breadcrumb filter.
+ *
+ * @package Skyrocket
  */
 
 /**
@@ -33,7 +98,6 @@ function swu_render_post_breadcrumb_title_meta_box($post)
         <input type="text" id="swu_post_breadcrumb_title" name="swu_post_breadcrumb_title"
             value="<?php echo esc_attr($breadcrumb_title); ?>" style="width: 100%;">
     </p>
-
     <p class="description">
         Optional. Provide a shorter title to use in breadcrumb trails if the main title is too long.
     </p>

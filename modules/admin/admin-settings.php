@@ -1,6 +1,88 @@
 <?php
 /**
- * Skyrocket Utilities settings screen.
+ * Skyrocket Utilities Settings
+ *
+ * Provides the central administration settings interface for the
+ * Skyrocket Utilities plugin, including settings registration,
+ * sanitisation, tab navigation, module loading and administration
+ * asset management.
+ *
+ * The settings screen is registered under WordPress Settings and
+ * uses a tab-based structure to organise configuration options into
+ * separate modules. Individual settings sections are loaded from
+ * dedicated module files, allowing the settings interface to be
+ * extended without substantially changing the central controller.
+ *
+ * Features:
+ *
+ * - Settings page:
+ *   Registers the Skyrocket Utilities settings screen under the
+ *   WordPress Settings menu, restricted to users with the
+ *   `manage_options` capability.
+ *
+ * - WordPress Settings API integration:
+ *   Registers the plugin's `swu_options` option using the WordPress
+ *   Settings API, with array-based storage and a dedicated
+ *   sanitisation callback.
+ *
+ * - Centralised settings storage:
+ *   Stores plugin configuration in a single `swu_options` option,
+ *   allowing individual modules to maintain their settings within
+ *   a shared options structure.
+ *
+ * - Settings sanitisation:
+ *   Validates and sanitises submitted settings while preserving
+ *   existing option values that are not included in the current
+ *   submission.
+ *
+ * - Tab navigation:
+ *   Provides a tab-based settings interface, with the active tab
+ *   determined by the URL query parameter and validated against
+ *   the registered tabs.
+ *
+ * - Modular settings architecture:
+ *   Loads individual settings module files according to the active
+ *   tab, keeping module-specific configuration and interface code
+ *   separate from the central settings controller.
+ *
+ * - Administration assets:
+ *   Loads the WordPress Media Library, shared settings JavaScript,
+ *   jQuery UI Sortable and the dedicated admin menu ordering script
+ *   on the plugin settings screen only.
+ *
+ * Current settings:
+ *
+ * - `login_logo_id`:
+ *   Stores the Media Library attachment ID used for the customised
+ *   WordPress login logo.
+ *
+ * - `admin_menu_order`:
+ *   Stores the preferred ordering of WordPress administration menu
+ *   items as an array of menu slugs.
+ *
+ * Hooks:
+ *
+ * - `admin_menu`:
+ *   Registers the Skyrocket Utilities settings page.
+ *
+ * - `admin_init`:
+ *   Registers the plugin settings with the WordPress Settings API.
+ *
+ * - `admin_enqueue_scripts`:
+ *   Loads the scripts and supporting WordPress functionality required
+ *   by the settings interface.
+ *
+ * Dependencies:
+ *
+ * - WordPress core Settings API, administration menu and media APIs.
+ * - WordPress jQuery and jQuery UI Sortable.
+ * - `SWU_PATH`, `SWU_URL` and `SWU_VERSION` plugin constants.
+ * - `modules/admin/settings/admin-tweaks.php` for the current
+ *   Admin tweaks settings tab.
+ * - `assets/js/admin/admin-settings.js`.
+ * - `assets/js/admin/admin-menu-order.js`.
+ *
+ * @package Skyrocket
  */
 
 defined('ABSPATH') || exit;

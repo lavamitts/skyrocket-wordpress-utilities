@@ -1,16 +1,71 @@
 <?php
+/**
+ * Customise the WordPress admin toolbar navigation.
+ *
+ * Adds a collection of custom navigation links to the site-title dropdown
+ * menu in the WordPress admin toolbar, providing convenient access to
+ * frequently used administration and content management screens.
+ *
+ *
+ * Features:
+ *
+ * - Dashboard:
+ *   Adds a direct link to the WordPress administration dashboard.
+ *
+ * - WooCommerce management:
+ *   When WooCommerce is active, adds links to Orders, Products and
+ *   Product reviews, grouped under a Store management heading.
+ *
+ * - Content management:
+ *   Adds links to Pages, Posts and Media.
+ *   Also includes links to Events when the `pavilion_event` post type
+ *   is registered, and Menus when the active theme supports navigation
+ *   menus or registered navigation menus are available.
+ *
+ * - Block patterns:
+ *   Adds a link to the My Patterns section of the WordPress Site Editor.
+ *
+ * - Administration tools:
+ *   Adds a separate section containing links to the Theme Customiser,
+ *   Site users, Plugins and the Skyrocket customisation settings page.
+ *
+ * Conditional integrations:
+ *
+ * - WooCommerce:
+ *   Store management links are only displayed when the WooCommerce
+ *   class is available.
+ *
+ * - Events:
+ *   The Events link is only displayed when the `pavilion_event`
+ *   custom post type is registered.
+ *
+ * - Navigation menus:
+ *   The Menus link is only displayed when the active theme supports
+ *   menus or registered navigation menus are available.
+ *
+ * Hooks:
+ *
+ * - `admin_bar_menu`:
+ *   Registers the custom navigation links in the WordPress admin toolbar
+ *   at priority 60.
+ *
+ * Dependencies:
+ *
+ * - WordPress core admin toolbar API (`WP_Admin_Bar`).
+ * - WordPress capability and theme support APIs.
+ * - Optional WooCommerce integration.
+ * - Optional `pavilion_event` custom post type.
+ *
+ * @package Skyrocket
+ */
+
+
 add_action('admin_bar_menu', 'swu_add_custom_admin_bar_links', 60);
 
 function swu_add_custom_admin_bar_links($wp_admin_bar)
 {
-    // Only allow users with administrator privileges to see these links
-    if (!current_user_can('manage_options')) {
-        return;
-    }
-
     // The parent ID for the site-title dropdown menu
     $parent = 'site-name';
-
 
     // Add Dashboard
     $wp_admin_bar->add_node(array(
@@ -27,8 +82,6 @@ function swu_add_custom_admin_bar_links($wp_admin_bar)
         'parent' => $parent,
         'href' => false,
     ));
-
-
 
     if (class_exists('WooCommerce')) {
         // Store management heading

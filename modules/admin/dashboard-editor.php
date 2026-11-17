@@ -1,7 +1,58 @@
 <?php
 /**
-- Custom Dashboard Widget for Specific User Role
-- Add this to your theme's functions.php or a custom plugin
+ * Common Tasks and WooCommerce Dashboard Widgets
+ *
+ * Adds role-restricted dashboard widgets to the WordPress
+ * administration dashboard, providing shortcuts to frequently used
+ * content management and store management screens.
+ *
+ * The Common tasks widget provides links for managing pages, posts,
+ * media and navigation menus. When WooCommerce is active, an
+ * additional Store tasks widget provides shortcuts for managing
+ * products, product categories, attributes, reviews and orders.
+ *
+ * Features:
+ *
+ * - Common tasks widget:
+ *   Registers a dashboard widget containing shortcuts to the Pages,
+ *   Media, Posts and Navigation Menus administration screens.
+ *
+ * - Store tasks widget:
+ *   Conditionally registers a second dashboard widget when
+ *   WooCommerce is active, providing shortcuts to product management,
+ *   product categories, product attributes, product reviews and orders.
+ *
+ * - WooCommerce detection:
+ *   Uses `class_exists('WooCommerce')` to check whether WooCommerce
+ *   is active before registering the Store tasks widget.
+ *
+ * - Dashboard placement:
+ *   Displays the Common tasks widget in the main dashboard area and
+ *   the Store tasks widget in the sidebar, both with high priority.
+ *
+ * Behaviour:
+ *
+ * - Registers the widgets during the `wp_dashboard_setup` action.
+ * - Uses capability checks intended to restrict access to
+ *   administrators and editors.
+ * - Registers the Store tasks widget only when WooCommerce is active.
+ * - Provides navigation shortcuts only; it does not implement
+ *   additional content or store management functionality.
+ *
+ * Hooks:
+ *
+ * - `wp_dashboard_setup`:
+ *   Registers the Common tasks and, where applicable, Store tasks
+ *   dashboard widgets.
+ *
+ * Dependencies:
+ *
+ * - WordPress core dashboard widget and administration APIs.
+ * - WooCommerce, for the Store tasks widget.
+ * - Appropriate WordPress and WooCommerce permissions for the
+ *   linked administration screens.
+ *
+ * @package Skyrocket
  */
 
 // Add the custom dashboard widget

@@ -1,6 +1,64 @@
 <?php
 /**
- * Control the order of the WordPress admin menu.
+ * Custom WordPress Admin Menu Order
+ *
+ * Controls the order of items in the WordPress administration menu,
+ * allowing a preferred menu structure to be defined centrally and
+ * optionally customised through the plugin's settings.
+ *
+ * The menu order is retrieved from the `swu_options` option. If no
+ * valid custom order has been saved, the file uses a predefined
+ * default order.
+ *
+ * Features:
+ *
+ * - Default menu order:
+ * Defines a preferred arrangement of standard WordPress admin menu
+ * items, including Dashboard, WooCommerce, Products, Pages, Posts,
+ * Media, Appearance, Plugins, Users, Tools and Settings.
+ *
+ * - Configurable order:
+ * Retrieves a saved menu order from the `admin_menu_order` key
+ * within the `swu_options` option.
+ *
+ * - Fallback handling:
+ * Uses the default menu order when no saved order exists, or when
+ * the stored value is not a valid, non-empty array.
+ *
+ * - Menu filtering:
+ * Applies the preferred order to menu items registered by WordPress
+ * and other plugins. Items not explicitly included in the preferred
+ * order are retained and appended afterwards in their existing order.
+ *
+ * - Duplicate prevention:
+ * Removes duplicate menu slugs from the resulting order.
+ *
+ * Behaviour:
+ *
+ * - Only reorders menu items that are present in the current admin menu.
+ * - Ignores preferred menu slugs that are not currently registered.
+ * - Preserves the relative order of menu items not explicitly listed.
+ * - Does not remove menu items or control their visibility.
+ *
+ * Settings:
+ *
+ * - `swu_options['admin_menu_order']`:
+ * Optional array of admin menu slugs defining the preferred order.
+ * When absent or invalid, the built-in default order is used.
+ *
+ * Hooks:
+ *
+ * - `custom_menu_order`:
+ * Enables custom menu ordering in WordPress.
+ *
+ * - `menu_order`:
+ * Applies the preferred menu order to the registered admin menu items.
+ *
+ * Dependencies:
+ *
+ * - WordPress core admin menu and options APIs.
+ *
+ * @package Skyrocket
  */
 
 defined('ABSPATH') || exit;

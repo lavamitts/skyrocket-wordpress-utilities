@@ -1,7 +1,51 @@
 <?php
 /**
-- Custom Dashboard Widget for Administrators Only (Plugins Tasks)
-- Add this to your theme's functions.php or a custom plugin
+ * Administrator Dashboard Tasks Widget
+ *
+ * Adds a custom widget to the WordPress administration dashboard,
+ * providing convenient shortcuts to commonly used plugin management,
+ * theme customisation and Skyrocket Utilities screens.
+ *
+ * The widget is registered in the dashboard's sidebar area with a
+ * high display priority and is intended for administrator access.
+ *
+ * Features:
+ *
+ * - Administrator dashboard widget:
+ *   Registers an "Administrator tasks" widget on the WordPress
+ *   administration dashboard.
+ *
+ * - Plugin management shortcuts:
+ *   Provides direct links to the installed plugins list and the
+ *   plugin installation screen.
+ *
+ * - Customisation shortcuts:
+ *   Provides links to the Widgets screen, the WordPress Theme
+ *   Customiser and the Skyrocket Utilities settings page.
+ *
+ * - Dashboard placement:
+ *   Displays the widget in the dashboard sidebar, with high priority
+ *   so that it appears near the top of the widget area.
+ *
+ * Behaviour:
+ *
+ * - Registers the widget during the `wp_dashboard_setup` action.
+ * - Checks the `administrator` capability before registering the widget.
+ * - Displays a two-column layout grouping plugin and customisation tasks.
+ * - Does not provide any additional styling; presentation depends on
+ *   the accompanying admin CSS, if present.
+ *
+ * Hooks:
+ *
+ * - `wp_dashboard_setup`:
+ *   Registers the custom dashboard widget.
+ *
+ * Dependencies:
+ *
+ * - WordPress core dashboard widget API.
+ * - The Skyrocket Utilities settings page for the corresponding shortcut.
+ *
+ * @package Skyrocket
  */
 
 // Add the custom dashboard widget

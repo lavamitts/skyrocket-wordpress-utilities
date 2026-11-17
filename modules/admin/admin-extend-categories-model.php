@@ -1,19 +1,136 @@
 <?php
 /**
- * Extend category taxonomies with custom term meta fields.
+ * Extended Category Taxonomy Fields and Display Controls
  *
- * - Posts "category":      custom archive title override (text)
- * - WooCommerce "product_cat": short description (textarea)
- * - WooCommerce "product_cat": display priority (integer)
+ * Extends the WordPress category and WooCommerce product category
+ * taxonomies with additional term metadata, administrative editing
+ * fields and frontend display functionality.
  *
- * Fields are defined once in swu_term_fields(); the add/edit screen output
- * and saving are handled by shared code.
+ * Field definitions are centralised in `swu_term_fields()`, allowing
+ * fields to be configured and rendered using shared code rather than
+ * implementing separate add, edit and save routines for each field.
  *
- * Frontend usage (product categories):
+ * Supported taxonomies and fields:
  *
- *     swu_category_short_description();
- *     swu_category_get_short_description();
- *     swu_category_get_display_priority();
+ * - WordPress categories (`category`):
+ *   Custom title override:
+ *   Allows an alternative archive heading to be specified for an
+ *   individual category. When configured, this replaces the standard
+ *   archive title on the corresponding category archive page.
+ *
+ * - WooCommerce product categories (`product_cat`):
+ *   Short description:
+ *   Provides an additional description field for product categories.
+ *   Can be retrieved and displayed independently of the standard
+ *   WooCommerce category description.
+ *
+ *   Display priority:
+ *   Stores an integer priority value for each product category.
+ *   Lower numbers represent higher priority, with 0 being the
+ *   default and highest priority.
+ *   The value is also exposed as a column in the product categories
+ *   administration table.
+ *
+ * Administrative functionality:
+ *
+ * - Adds the configured fields to the relevant taxonomy Add New screens.
+ * - Displays existing metadata on taxonomy Edit screens.
+ * - Saves submitted values using shared sanitisation and validation logic.
+ * - Verifies the appropriate WordPress nonce for add and edit operations.
+ * - Checks the user's `edit_term` capability before saving metadata.
+ * - Uses WordPress term metadata APIs for persistent storage.
+ * - Provides configurable field types: text, textarea and number.
+ * - Supports translated field labels and descriptions.
+ *
+ * Frontend functionality:
+ *
+ * - Replaces the standard WordPress category archive title when a custom
+ *   title override has been configured.
+ * - Provides helper functions to retrieve and output WooCommerce product
+ *   category short descriptions.
+ * - Displays the custom short description beneath product category titles
+ *   in WooCommerce category listings.
+ * - Removes Blocksy's standard category excerpt from category tiles to
+ *   avoid displaying duplicate descriptions.
+ *
+ * Product category administration:
+ *
+ * - Adds a Priority column to the WooCommerce product categories table.
+ * - Displays each category's configured display priority.
+ * - Registers the column as sortable in the administration interface.
+ *
+ * Metadata keys:
+ *
+ * - `category_title_override`:
+ *   Custom WordPress category archive title.
+ *
+ * - `_wc_category_short_description`:
+ *   WooCommerce product category short description.
+ *
+ * - `_swu_category_display_priority`:
+ *   WooCommerce product category display priority.
+ *
+ * Public helper functions:
+ *
+ * - `swu_term_fields()`:
+ *   Returns the field definitions indexed by taxonomy.
+ *
+ * - `swu_get_field_label()`:
+ *   Returns a translated field label.
+ *
+ * - `swu_get_field_description()`:
+ *   Returns a translated field description.
+ *
+ * - `swu_category_get_short_description()`:
+ *   Retrieves a product category's short description. Defaults to the
+ *   currently queried term when no term ID is supplied.
+ *
+ * - `swu_category_short_description()`:
+ *   Outputs a product category's short description, formatted into
+ *   paragraphs.
+ *
+ * - `swu_category_get_display_priority()`:
+ *   Retrieves a product category's display priority.
+ *
+ * Dependencies and integrations:
+ *
+ * - WordPress core taxonomy and term metadata APIs.
+ * - WooCommerce for product category functionality and category hooks.
+ * - Blocksy theme markup for removal of the standard category excerpt.
+ *
+ * Hooks:
+ *
+ * - `init`:
+ *   Registers the taxonomy administration fields and save handlers.
+ *
+ * - `{taxonomy}_add_form_fields`:
+ *   Displays fields on taxonomy creation screens.
+ *
+ * - `{taxonomy}_edit_form_fields`:
+ *   Displays fields on taxonomy editing screens.
+ *
+ * - `created_{taxonomy}` / `edited_{taxonomy}`:
+ *   Saves the associated term metadata.
+ *
+ * - `get_the_archive_title`:
+ *   Applies custom WordPress category archive titles.
+ *
+ * - `woocommerce_after_subcategory_title`:
+ *   Outputs custom short descriptions beneath product category titles.
+ *
+ * - `woocommerce_before_subcategory` / `woocommerce_after_subcategory`:
+ *   Buffers category tile output to remove Blocksy's standard excerpt.
+ *
+ * - `manage_edit-product_cat_columns`:
+ *   Adds the Priority column to the product categories table.
+ *
+ * - `manage_product_cat_custom_column`:
+ *   Outputs the priority value.
+ *
+ * - `manage_edit-product_cat_sortable_columns`:
+ *   Makes the Priority column sortable.
+ *
+ * @package Skyrocket
  */
 
 defined('ABSPATH') || exit;
@@ -92,18 +209,18 @@ add_action('init', function () {
                 $id = 'swu_term_meta_' . $field['key'];
                 $value = $field['type'] === 'number' ? '0' : '';
                 ?>
-                <div class="form-field">
-                    <label for="<?php echo esc_attr($id); ?>">
-                        <?php echo esc_html($field['label']); ?>
-                    </label>
+                                <div class="form-field">
+                                    <label for="<?php echo esc_attr($id); ?>">
+                                        <?php echo esc_html($field['label']); ?>
+                                    </label>
 
-                    <?php swu_render_term_field($field, $value); ?>
+                                    <?php swu_render_term_field($field, $value); ?>
 
-                    <p class="description">
-                        <?php echo esc_html($field['description']); ?>
-                    </p>
-                </div>
-                <?php
+                                    <p class="description">
+                                        <?php echo esc_html($field['description']); ?>
+                                    </p>
+                                </div>
+                                <?php
             }
         });
 
@@ -122,21 +239,21 @@ add_action('init', function () {
                     $value = '0';
                 }
                 ?>
-                <tr class="form-field">
-                    <th scope="row">
-                        <label for="<?php echo esc_attr($id); ?>">
-                            <?php echo esc_html($field['label']); ?>
-                        </label>
-                    </th>
-                    <td>
-                        <?php swu_render_term_field($field, $value); ?>
+                                <tr class="form-field">
+                                    <th scope="row">
+                                        <label for="<?php echo esc_attr($id); ?>">
+                                            <?php echo esc_html($field['label']); ?>
+                                        </label>
+                                    </th>
+                                    <td>
+                                        <?php swu_render_term_field($field, $value); ?>
 
-                        <p class="description">
-                            <?php echo esc_html($field['description']); ?>
-                        </p>
-                    </td>
-                </tr>
-                <?php
+                                        <p class="description">
+                                            <?php echo esc_html($field['description']); ?>
+                                        </p>
+                                    </td>
+                                </tr>
+                                <?php
             }
         });
 
@@ -198,18 +315,18 @@ foreach (swu_term_fields() as $swu_taxonomy => $swu_fields) {
             $id = 'swu_term_meta_' . $field['key'];
             $value = $field['type'] === 'number' ? '0' : '';
             ?>
-            <div class="form-field">
-                <label for="<?php echo esc_attr($id); ?>">
-                    <?php echo esc_html($field['label']); ?>
-                </label>
+                        <div class="form-field">
+                            <label for="<?php echo esc_attr($id); ?>">
+                                <?php echo esc_html($field['label']); ?>
+                            </label>
 
-                <?php swu_render_term_field($field, $value); ?>
+                            <?php swu_render_term_field($field, $value); ?>
 
-                <p class="description">
-                    <?php echo esc_html($field['description']); ?>
-                </p>
-            </div>
-            <?php
+                            <p class="description">
+                                <?php echo esc_html($field['description']); ?>
+                            </p>
+                        </div>
+                        <?php
         }
     });
 
@@ -228,21 +345,21 @@ foreach (swu_term_fields() as $swu_taxonomy => $swu_fields) {
                 $value = '0';
             }
             ?>
-            <tr class="form-field">
-                <th scope="row">
-                    <label for="<?php echo esc_attr($id); ?>">
-                        <?php echo esc_html($field['label']); ?>
-                    </label>
-                </th>
-                <td>
-                    <?php swu_render_term_field($field, $value); ?>
+                        <tr class="form-field">
+                            <th scope="row">
+                                <label for="<?php echo esc_attr($id); ?>">
+                                    <?php echo esc_html($field['label']); ?>
+                                </label>
+                            </th>
+                            <td>
+                                <?php swu_render_term_field($field, $value); ?>
 
-                    <p class="description">
-                        <?php echo esc_html($field['description']); ?>
-                    </p>
-                </td>
-            </tr>
-            <?php
+                                <p class="description">
+                                    <?php echo esc_html($field['description']); ?>
+                                </p>
+                            </td>
+                        </tr>
+                        <?php
         }
     });
 
