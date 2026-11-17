@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Skyrocket WordPress Utilities
  * Description: A collection of reusable WordPress enhancements and utilities.
- * Version: 1.0.9
+ * Version: 1.1.0
  * Author: Biddenham Society
  * Author URI: https://biddenham.org.uk/
  * Text Domain: skyrocket-wordpress-utilities
@@ -17,8 +17,7 @@ define('SWU_VERSION', '1.0.9');
 define('SWU_PATH', plugin_dir_path(__FILE__));
 define('SWU_URL', plugin_dir_url(__FILE__));
 
-
-// GitHub updater configuration.
+// GitHub updater configuration
 $github_updater_config = [
     'username' => 'lavamitts',
     'repository' => 'skyrocket-wordpress-utilities',
@@ -26,7 +25,7 @@ $github_updater_config = [
 ];
 
 // Updater code
-require_once __DIR__ . '/includes/plugin-updater.php';
+require_once __DIR__ . '/vendor/lavamitts/skyrocket-plugin-updater/src/plugin-updater.php';
 
 
 // Remove the temporary configuration variable.

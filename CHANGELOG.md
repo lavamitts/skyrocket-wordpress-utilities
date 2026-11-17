@@ -48,3 +48,8 @@
 ## 1.0.9 - Correct repo name in script updater
 
 - Correct repo name in script updater
+
+## 1.1.0 - Update to use the renamed plugin updater
+
+- Now using "lavamitts/skyrocket-plugin-updater" instead of "lavamitts/github-plugin-updater".
+- Build tooling adjusted to NOT include the composer and autoload files in the distribution.

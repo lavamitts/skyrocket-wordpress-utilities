@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eeba6e0ab0d3cd7c3b5b2117436bf472",
+    "content-hash": "31edf5706427fe7f438e599da698362e",
     "packages": [],
     "packages-dev": [
         {
-            "name": "lavamitts/github-plugin-updater",
-            "version": "1.0.2",
+            "name": "lavamitts/skyrocket-plugin-updater",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
-                "url": "https://github.com/lavamitts/github-plugin-updater.git",
-                "reference": "9b275a3b4015646d1a65a59af64ab85a5310e007"
+                "url": "https://github.com/lavamitts/skyrocket-plugin-updater.git",
+                "reference": "fd040f0a656d7c8344c24a5c0234257651a230b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lavamitts/github-plugin-updater/zipball/9b275a3b4015646d1a65a59af64ab85a5310e007",
-                "reference": "9b275a3b4015646d1a65a59af64ab85a5310e007",
+                "url": "https://api.github.com/repos/lavamitts/skyrocket-plugin-updater/zipball/fd040f0a656d7c8344c24a5c0234257651a230b9",
+                "reference": "fd040f0a656d7c8344c24a5c0234257651a230b9",
                 "shasum": ""
             },
             "require": {
@@ -33,12 +33,12 @@
             "license": [
                 "MIT"
             ],
-            "description": "Minimal single-file GitHub release asset updater for WordPress plugins.",
+            "description": "Minimal GitHub release asset updater for WordPress plugins.",
             "support": {
-                "source": "https://github.com/lavamitts/github-plugin-updater/tree/1.0.2",
-                "issues": "https://github.com/lavamitts/github-plugin-updater/issues"
+                "source": "https://github.com/lavamitts/skyrocket-plugin-updater/tree/1.0.5",
+                "issues": "https://github.com/lavamitts/skyrocket-plugin-updater/issues"
             },
-            "time": "2026-11-16T21:26:02+00:00"
+            "time": "2026-11-17T08:07:28+00:00"
         }
     ],
     "aliases": [],
