@@ -4,6 +4,11 @@
   color: antiquewhite !important;
 }
 
+div.ab-sub-wrapper ul li strong {
+  font-weight: bold !important;
+  color: antiquewhite !important;
+}
+
 .swu-admin-menu-sortable {
   max-width: 500px;
   margin: 20px 0;

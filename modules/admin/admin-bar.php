@@ -67,6 +67,13 @@ function swu_add_custom_admin_bar_links($wp_admin_bar)
     // The parent ID for the site-title dropdown menu
     $parent = 'site-name';
 
+    // Remove all existing child nodes from the site-title dropdown.
+    foreach ($wp_admin_bar->get_nodes() as $node) {
+        if ($node->parent === $parent) {
+            $wp_admin_bar->remove_node($node->id);
+        }
+    }
+
     // Add Dashboard
     $wp_admin_bar->add_node(array(
         'id' => 'custom-dashboard',
@@ -74,6 +81,19 @@ function swu_add_custom_admin_bar_links($wp_admin_bar)
         'parent' => $parent,
         'href' => admin_url('index.php'),
     ));
+
+    // Add Visit site (only when viewing the WordPress admin).
+    if (is_admin()) {
+        $wp_admin_bar->add_node(array(
+            'id' => 'custom-visit-site',
+            'title' => 'Visit site',
+            'parent' => $parent,
+            'href' => home_url('/'),
+            'meta' => array(
+                'target' => '_blank',
+            ),
+        ));
+    }
 
     // Add separator
     $wp_admin_bar->add_node(array(

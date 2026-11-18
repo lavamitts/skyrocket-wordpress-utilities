@@ -99,3 +99,9 @@ Adds a Usage column to the Media Library list view, identifying attachments refe
 *frontend-current-date.php*
 
 Provides shortcodes for displaying the current year and date.
+
+## 1.2.4 - Split menu order and login logo into two separate tabs
+
+- Remove `admin-tweaks` tab from the Skyrocket utilities admin.
+- Replace with two tabs `login-logo` and `menu-order`.
+- Fix display of admin menu for logged in users on the 'live site'

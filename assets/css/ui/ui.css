@@ -16,3 +16,8 @@
 .policy-list li {
   margin-bottom: 1rem;
 }
+
+div.ab-sub-wrapper ul li strong {
+  font-weight: bold !important;
+  color: antiquewhite !important;
+}

@@ -181,16 +181,17 @@ function swu_render_settings_page()
 
     // Define available tabs for the settings interface.
     $tabs = [
-        'admin-tweaks' => 'Admin tweaks',
+        'login-logo' => 'Login logo',
+        'menu-order' => 'Admin menu order',
         'local-fonts' => 'Local fonts',
     ];
 
     $active_tab = isset($_GET['tab'])
         ? sanitize_key(wp_unslash($_GET['tab']))
-        : 'admin-tweaks';
+        : 'login-logo';
 
     if (!isset($tabs[$active_tab])) {
-        $active_tab = 'admin-tweaks';
+        $active_tab = 'login-logo';
     }
 
     ?>
@@ -216,10 +217,12 @@ function swu_render_settings_page()
             <input type="hidden" name="swu_active_tab" value="<?php echo esc_attr($active_tab); ?>">
 
             <?php
-            if ($active_tab === 'admin-tweaks') {
-                require SWU_PATH . 'modules/admin/settings/admin-tweaks.php';
+            if ($active_tab === 'login-logo') {
+                require SWU_PATH . 'modules/admin/settings/login-logo.php';
             } elseif ($active_tab === 'local-fonts') {
                 require SWU_PATH . 'modules/admin/settings/local-fonts.php';
+            } elseif ($active_tab === 'menu-order') {
+                require SWU_PATH . 'modules/admin/settings/menu-order.php';
             }
             ?>
 
