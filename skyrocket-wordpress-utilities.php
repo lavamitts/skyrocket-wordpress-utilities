@@ -10,7 +10,7 @@
 defined('ABSPATH') || exit;
 
 // Plugin version constant, used for cache-busting CSS and JavaScript.
-define('SWU_VERSION', '1.0.9');
+define('SWU_VERSION', '1.2.0');
 
 // Plugin directory path and URL.
 define('SWU_PATH', plugin_dir_path(__FILE__));

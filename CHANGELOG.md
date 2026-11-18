@@ -53,3 +53,7 @@
 
 - Now using "lavamitts/skyrocket-plugin-updater" instead of "lavamitts/github-plugin-updater".
 - Build tooling adjusted to NOT include the composer and autoload files in the distribution.
+
+## 1.2.0 - Documentation enhancements
+
+- Updated readme file to document all utilities included to date
