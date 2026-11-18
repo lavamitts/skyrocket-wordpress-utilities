@@ -20,10 +20,16 @@ add_action('plugins_loaded', function () {
         'admin/admin-extend-attributes-model.php',
         'admin/admin-extend-pages-model.php',
         'admin/admin-extend-posts-model.php',
-        'admin/dashboard-common.php',
-        'admin/dashboard-administrator.php',
-        'admin/dashboard-editor.php',
+
+        // Dashboard enhancements
+        'admin/dashboard/dashboard-common.php',
+        'admin/dashboard/dashboard-administrator.php',
+        'admin/dashboard/dashboard-editor.php',
+
+        // Media library enhancements
         'admin/media/editor-featured-image-dimensions-alt.php',
+
+        'admin/pages-posts/editor-reading-time.php',
 
         'search/exclude-hidden-pages-from-live-search.php',
         'search/live-search-columnar-display.php',
