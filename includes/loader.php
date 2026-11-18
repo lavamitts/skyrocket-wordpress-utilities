@@ -17,8 +17,6 @@ add_action('plugins_loaded', function () {
         'admin/admin-link-priority.php',
         'admin/admin-extend-categories-model.php',
         'admin/admin-extend-attributes-model.php',
-        'admin/admin-extend-pages-model.php',
-        'admin/admin-extend-posts-model.php',
 
         // Dashboard enhancements
         'admin/dashboard/dashboard-common.php',
@@ -28,8 +26,11 @@ add_action('plugins_loaded', function () {
         // Media library enhancements
         'admin/media/editor-featured-image-dimensions-alt.php',
         'admin/media/media-library-dimensions.php',
+        'admin/media/media-library-unused-media.php',
 
         // Pages and posts enhancements
+        'admin/pages-posts/admin-extend-pages-model.php',
+        'admin/pages-posts/admin-extend-posts-model.php',
         'admin/pages-posts/admin-posts-show-feature-image.php',
         'admin/pages-posts/editor-reading-time.php',
 
@@ -40,6 +41,7 @@ add_action('plugins_loaded', function () {
         // UI enhancements
         'ui/body-add-slug-class.php',
         'ui/local-fonts-loader.php',
+        'ui/frontend-current-date.php',
     ];
 
     if (class_exists('WooCommerce')) {
