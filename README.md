@@ -1,8 +1,6 @@
-
 # Skyrocket WordPress Utilities
 
-A collection of reusable WordPress enhancements, customisations
-and utility functions developed by Skyrocket Phytopharma.
+A collection of reusable WordPress enhancements, customisations and utility functions developed by Skyrocket Digital Development.
 
 Designed for internal use across multiple WordPress websites.
 

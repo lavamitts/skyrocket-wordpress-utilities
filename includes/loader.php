@@ -28,6 +28,7 @@ add_action('plugins_loaded', function () {
         'search/live-search-columnar-display.php',
 
         'ui/body-add-slug-class.php',
+        'ui/local-fonts-loader.php',
     ];
 
     if (class_exists('WooCommerce')) {

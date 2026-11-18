@@ -60,6 +60,10 @@
  *   Stores the preferred ordering of WordPress administration menu
  *   items as an array of menu slugs.
  *
+ * - `local_fonts_enabled`:
+ *   Boolean flag (1 or 0) controlling whether local Google Fonts
+ *   from the active child theme replace Blocksy's remote Google Fonts.
+ *
  * Hooks:
  *
  * - `admin_menu`:
@@ -77,8 +81,8 @@
  * - WordPress core Settings API, administration menu and media APIs.
  * - WordPress jQuery and jQuery UI Sortable.
  * - `SWU_PATH`, `SWU_URL` and `SWU_VERSION` plugin constants.
- * - `modules/admin/settings/admin-tweaks.php` for the current
- *   Admin tweaks settings tab.
+ * - `modules/admin/settings/admin-tweaks.php` for the Admin tweaks settings tab.
+ * - `modules/admin/settings/local-fonts.php` for the Local fonts settings tab.
  * - `assets/js/admin/admin-settings.js`.
  * - `assets/js/admin/admin-menu-order.js`.
  *
@@ -124,7 +128,6 @@ add_action('admin_init', 'swu_register_settings');
 /**
  * Sanitize plugin settings.
  */
-
 function swu_sanitize_options($input)
 {
     $input = is_array($input) ? wp_unslash($input) : [];
@@ -155,6 +158,11 @@ function swu_sanitize_options($input)
         $options['admin_menu_order'] = $menu_order;
     }
 
+    // Local Google Fonts toggle (only process if submitting from the local-fonts tab).
+    if (isset($input['_swu_tab']) && $input['_swu_tab'] === 'local-fonts') {
+        $options['local_fonts_enabled'] = isset($input['local_fonts_enabled']) ? 1 : 0;
+    }
+
     return $options;
 }
 
@@ -167,8 +175,10 @@ function swu_render_settings_page()
         return;
     }
 
+    // Define available tabs for the settings interface.
     $tabs = [
         'admin-tweaks' => 'Admin tweaks',
+        'local-fonts' => 'Local fonts',
     ];
 
     $active_tab = isset($_GET['tab'])
@@ -199,10 +209,13 @@ function swu_render_settings_page()
         <form method="post" action="options.php">
 
             <?php settings_fields('swu_settings_group'); ?>
+            <input type="hidden" name="swu_options[_swu_tab]" value="<?php echo esc_attr($active_tab); ?>">
 
             <?php
             if ($active_tab === 'admin-tweaks') {
                 require SWU_PATH . 'modules/admin/settings/admin-tweaks.php';
+            } elseif ($active_tab === 'local-fonts') {
+                require SWU_PATH . 'modules/admin/settings/local-fonts.php';
             }
             ?>
 
