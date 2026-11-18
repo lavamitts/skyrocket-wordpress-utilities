@@ -23,6 +23,7 @@ add_action('plugins_loaded', function () {
         'admin/dashboard-common.php',
         'admin/dashboard-administrator.php',
         'admin/dashboard-editor.php',
+        'admin/media/editor-featured-image-dimensions-alt.php',
 
         'search/exclude-hidden-pages-from-live-search.php',
         'search/live-search-columnar-display.php',
