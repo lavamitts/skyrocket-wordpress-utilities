@@ -9,16 +9,16 @@
     "packages-dev": [
         {
             "name": "lavamitts/skyrocket-plugin-updater",
-            "version": "1.0.5",
+            "version": "1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lavamitts/skyrocket-plugin-updater.git",
-                "reference": "fd040f0a656d7c8344c24a5c0234257651a230b9"
+                "reference": "db5bf123688cf94249b583612bef28e2f1310d52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lavamitts/skyrocket-plugin-updater/zipball/fd040f0a656d7c8344c24a5c0234257651a230b9",
-                "reference": "fd040f0a656d7c8344c24a5c0234257651a230b9",
+                "url": "https://api.github.com/repos/lavamitts/skyrocket-plugin-updater/zipball/db5bf123688cf94249b583612bef28e2f1310d52",
+                "reference": "db5bf123688cf94249b583612bef28e2f1310d52",
                 "shasum": ""
             },
             "require": {
@@ -35,10 +35,10 @@
             ],
             "description": "Minimal GitHub release asset updater for WordPress plugins.",
             "support": {
-                "source": "https://github.com/lavamitts/skyrocket-plugin-updater/tree/1.0.5",
+                "source": "https://github.com/lavamitts/skyrocket-plugin-updater/tree/1.0.6",
                 "issues": "https://github.com/lavamitts/skyrocket-plugin-updater/issues"
             },
-            "time": "2026-11-17T08:07:28+00:00"
+            "time": "2026-11-18T07:22:09+00:00"
         }
     ],
     "aliases": [],
