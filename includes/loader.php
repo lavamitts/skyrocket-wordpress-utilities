@@ -13,7 +13,6 @@ add_action('plugins_loaded', function () {
         'admin/admin-logo.php',
         'admin/admin-menu-order.php',
         'admin/admin-title-search-on-quotes.php',
-        'admin/admin-posts-show-feature-image.php',
         'admin/admin-disable-user-dropdown-on-edit.php',
         'admin/admin-link-priority.php',
         'admin/admin-extend-categories-model.php',
@@ -28,12 +27,17 @@ add_action('plugins_loaded', function () {
 
         // Media library enhancements
         'admin/media/editor-featured-image-dimensions-alt.php',
+        'admin/media/media-library-dimensions.php',
 
+        // Pages and posts enhancements
+        'admin/pages-posts/admin-posts-show-feature-image.php',
         'admin/pages-posts/editor-reading-time.php',
 
+        // Search enhancements
         'search/exclude-hidden-pages-from-live-search.php',
         'search/live-search-columnar-display.php',
 
+        // UI enhancements
         'ui/body-add-slug-class.php',
         'ui/local-fonts-loader.php',
     ];
