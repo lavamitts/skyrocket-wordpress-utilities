@@ -68,7 +68,7 @@
 
 - Fix to ensure all tab changes are captured correctly.
 
-# 1.2.3. - Addition of new functionality
+## 1.2.3 - Addition of new functionality
 
 editor-featured-image-dimensions.php
 editor-reading-time.php
