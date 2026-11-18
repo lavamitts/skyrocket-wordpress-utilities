@@ -108,6 +108,32 @@ Adds role-restricted dashboard widgets to the WordPress administration dashboard
 
 The Common tasks widget provides links for managing pages, posts, media and navigation menus. When WooCommerce is active, an additional Store tasks widget provides shortcuts for managing products, product categories, attributes, reviews and orders.
 
+### Display featured image dimensions and ALT text in the WordPress block editor.
+
+*editor-featured-image-dimensions-alt.php*
+
+Retrieves the featured image dimensions and ALT text from WordPress attachment metadata and displays them beneath the Featured Image panel.
+
+### Display word count and estimated reading time in the WordPress block editor.
+
+*editor-reading-time.php*
+
+Adds a Reading Time panel to the editor's Document sidebar, displaying the current word count and estimated reading time for the post content.
+
+### Add image dimensions to the WordPress Media Library list view.
+
+*media-library-dimensions.php*
+
+Adds a Dimensions column displaying the width and height of image attachments using their stored WordPress attachment metadata.
+
+
+
+### Identify potentially unused attachments in the WordPress Media Library.
+
+*media-library-unused-media.php*
+
+Adds a Usage column to the Media Library list view, identifying attachments referenced by standard WordPress content sources.
+
 ## Search modules
 
 ### Exclude Slim SEO Noindex Content from Front-End Search
@@ -129,6 +155,12 @@ Provides grouped Blocksy live search results for posts, pages and Pavilion Event
 Adds the current post or page slug as an additional CSS class to the HTML body element on individual WordPress content views.
 
 This provides a convenient way to target specific posts, pages and custom post type entries with CSS or JavaScript, without requiring manually assigned classes or additional theme settings.
+
+### Current date shotrcode
+
+*frontend-current-date.php*
+
+Provides shortcodes for displaying the current year and date.
 
 ### Skyrocket Utilities Settings
 

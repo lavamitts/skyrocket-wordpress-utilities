@@ -67,3 +67,12 @@
 ## 1.2.2 - Utilities admin tools fix
 
 - Fix to ensure all tab changes are captured correctly.
+
+# 1.2.3. - Addition of new functionality
+
+editor-featured-image-dimensions.php
+editor-reading-time.php
+media-library-dimensions.php
+media-library-file-size.php
+media-library-unused-media.php
+frontend-current-year.php
