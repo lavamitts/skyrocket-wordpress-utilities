@@ -132,8 +132,8 @@ function swu_sanitize_options($input)
 {
     $input = is_array($input) ? wp_unslash($input) : [];
 
+    // Always fetch existing options so we don't wipe unsubmitted tab fields.
     $options = get_option('swu_options', []);
-
     if (!is_array($options)) {
         $options = [];
     }
@@ -158,8 +158,12 @@ function swu_sanitize_options($input)
         $options['admin_menu_order'] = $menu_order;
     }
 
-    // Local Google Fonts toggle (only process if submitting from the local-fonts tab).
-    if (isset($input['_swu_tab']) && $input['_swu_tab'] === 'local-fonts') {
+    // Local Google Fonts toggle.
+    // Check if we are submitting from the local-fonts tab via the top-level POST variable.
+    $active_tab = isset($_POST['swu_active_tab']) ? sanitize_key(wp_unslash($_POST['swu_active_tab'])) : '';
+
+    if ($active_tab === 'local-fonts') {
+        // If the checkbox is checked, $_POST contains it; if unchecked, it's absent (0).
         $options['local_fonts_enabled'] = isset($input['local_fonts_enabled']) ? 1 : 0;
     }
 
@@ -209,7 +213,7 @@ function swu_render_settings_page()
         <form method="post" action="options.php">
 
             <?php settings_fields('swu_settings_group'); ?>
-            <input type="hidden" name="swu_options[_swu_tab]" value="<?php echo esc_attr($active_tab); ?>">
+            <input type="hidden" name="swu_active_tab" value="<?php echo esc_attr($active_tab); ?>">
 
             <?php
             if ($active_tab === 'admin-tweaks') {

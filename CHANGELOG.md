@@ -63,3 +63,7 @@
 - Added a Local Fonts governance module allowing Google Fonts to be self-hosted directly from the active child theme (/assets/fonts/local-fonts.css).
 - Added a dedicated settings tab under Skyrocket Utilities with a master toggle and live stylesheet validation check.
 - When enabled and the local asset is present, the plugin automatically dequeues Blocksy's remote Google Fonts stylesheets, strips external googleapis.com and gstatic.com resource hints across both the frontend and block editor, and enqueues the local @font-face definitions with filemtime() cache-busting—falling back gracefully to remote fonts if local files are absent.
+
+## 1.2.2 - Utilities admin tools fix
+
+- Fix to ensure all tab changes are captured correctly.
