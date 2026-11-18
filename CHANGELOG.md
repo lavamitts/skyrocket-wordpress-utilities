@@ -70,9 +70,32 @@
 
 ## 1.2.3 - Addition of new functionality
 
-editor-featured-image-dimensions.php
-editor-reading-time.php
-media-library-dimensions.php
-media-library-file-size.php
-media-library-unused-media.php
-frontend-current-year.php
+### Display featured image dimensions and ALT text in the WordPress block editor.
+
+*editor-featured-image-dimensions-alt.php*
+
+Retrieves the featured image dimensions and ALT text from WordPress attachment metadata and displays them beneath the Featured Image panel.
+
+### Display word count and estimated reading time in the WordPress block editor.
+
+*editor-reading-time.php*
+
+Adds a Reading Time panel to the editor's Document sidebar, displaying the current word count and estimated reading time for the post content.
+
+### Add image dimensions to the WordPress Media Library list view.
+
+*media-library-dimensions.php*
+
+Adds a Dimensions column displaying the width and height of image attachments using their stored WordPress attachment metadata.
+
+### Identify potentially unused attachments in the WordPress Media Library.
+
+*media-library-unused-media.php*
+
+Adds a Usage column to the Media Library list view, identifying attachments referenced by standard WordPress content sources.
+
+### Current date shotrcode
+
+*frontend-current-date.php*
+
+Provides shortcodes for displaying the current year and date.
