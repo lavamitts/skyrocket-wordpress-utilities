@@ -6,7 +6,7 @@ and utility functions developed by Skyrocket Phytopharma.
 
 Designed for internal use across multiple WordPress websites.
 
-## Modules
+## Admin modules
 
 ### Customise the WordPress admin toolbar navigation.
 
@@ -109,6 +109,28 @@ Customises the WordPress administration dashboard by loading a dedicated dashboa
 Adds role-restricted dashboard widgets to the WordPress administration dashboard, providing shortcuts to frequently used content management and store management screens.
 
 The Common tasks widget provides links for managing pages, posts, media and navigation menus. When WooCommerce is active, an additional Store tasks widget provides shortcuts for managing products, product categories, attributes, reviews and orders.
+
+## Search modules
+
+### Exclude Slim SEO Noindex Content from Front-End Search
+
+*exclude-hidden-pages-from-live-search.php*
+
+Modifies standard WordPress front-end search queries to include both posts and pages while excluding content that has been marked as noindex in Slim SEO.
+
+### Live Search Columns
+
+*live-search-columnar-display.php*
+
+Provides grouped Blocksy live search results for posts, pages and Pavilion Events, including dedicated styling, JavaScript and REST API configuration. Integrates with Blocksy's live search functionality to display search results grouped by content type, with configurable result limits and separate REST API endpoints.
+
+## UI modules
+
+### Add Singular Content Slug to the Body Class
+
+Adds the current post or page slug as an additional CSS class to the HTML body element on individual WordPress content views.
+
+This provides a convenient way to target specific posts, pages and custom post type entries with CSS or JavaScript, without requiring manually assigned classes or additional theme settings.
 
 ### Skyrocket Utilities Settings
 
