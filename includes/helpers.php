@@ -1,17 +1,17 @@
 <?php
-function h1($text): void
+function swu_h1($text): void
 {
     echo ("<h1>{$text}</h1>");
 }
-function h2($text): void
+function swu_h2($text): void
 {
     echo ("<h2>{$text}</h2>");
 }
-function pre($text): void
+function swu_pre($text): void
 {
     echo ("<pre>{$text}</pre>");
 }
-function print_array($array): void
+function swu_print_array($array): void
 {
     echo '<pre>';
     print_r($array);
