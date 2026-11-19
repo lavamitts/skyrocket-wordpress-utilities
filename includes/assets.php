@@ -7,6 +7,7 @@ defined('ABSPATH') || exit;
  */
 function swu_enqueue_admin_styles()
 {
+    error_log("swu_enqueue_admin_styles");
     $file = SWU_PATH . 'assets/css/admin/admin.css';
 
     if (!file_exists($file)) {

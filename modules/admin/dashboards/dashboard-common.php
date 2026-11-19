@@ -68,7 +68,7 @@ function enqueue_custom_dashboard_styles()
 
     // Only load on the main dashboard page
     if ($screen && 'dashboard' === $screen->id) {
-        $css_path = '../../assets/css/dashboard/dashboard.css';
+        $css_path = '../../../assets/css/dashboard/dashboard.css';
         // error_log(plugin_dir_url(__FILE__) . $css_path);
 
         wp_enqueue_style(

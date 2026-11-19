@@ -48,9 +48,6 @@ add_action('plugins_loaded', function () {
     if (class_exists('WooCommerce')) {
         $modules[] = 'woocommerce/bootstrapper.php';
     }
-    // $modules = [];
-
-    // print_array($modules);
 
     /**
      * Load each active module.

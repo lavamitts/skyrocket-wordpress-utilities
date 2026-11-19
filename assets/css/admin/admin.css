@@ -46,3 +46,8 @@ div.ab-sub-wrapper ul li strong {
   background: #f0f0f1;
   border: 1px dashed #8c8f94;
 }
+
+table.wp-list-table.plugins th.plugin-title,
+table.wp-list-table.plugins th.theme-title {
+  white-space: unset;
+}

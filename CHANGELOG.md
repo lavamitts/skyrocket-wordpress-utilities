@@ -117,3 +117,8 @@ Provides shortcodes for displaying the current year and date.
 ## 1.2.7 - Correct path to custom dashboards
 
 - Correct path to custom dashboards
+
+## 1.2.8 - Small changes
+
+- Remove the no wrap from the plugin title column
+- Correct path to admin dashboard CSS
