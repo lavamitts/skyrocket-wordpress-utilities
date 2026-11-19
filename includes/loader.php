@@ -19,9 +19,9 @@ add_action('plugins_loaded', function () {
         'admin/admin-extend-attributes-model.php',
 
         // Dashboard enhancements
-        'admin/dashboard/dashboard-common.php',
-        'admin/dashboard/dashboard-administrator.php',
-        'admin/dashboard/dashboard-editor.php',
+        'admin/dashboards/dashboard-common.php',
+        'admin/dashboards/dashboard-administrator.php',
+        'admin/dashboards/dashboard-editor.php',
 
         // Media library enhancements
         'admin/media/editor-featured-image-dimensions-alt.php',

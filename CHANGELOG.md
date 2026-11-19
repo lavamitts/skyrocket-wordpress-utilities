@@ -113,3 +113,7 @@ Provides shortcodes for displaying the current year and date.
 ## 1.2.6 - Fix BOM in disable user dropdown
 
 - Newline character caused Updraft Plus warning re: possible BOM
+
+## 1.2.7 - Correct path to custom dashboards
+
+- Correct path to custom dashboards
