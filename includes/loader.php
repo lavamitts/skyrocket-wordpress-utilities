@@ -42,6 +42,7 @@ add_action('plugins_loaded', function () {
         'ui/body-add-slug-class.php',
         'ui/local-fonts-loader.php',
         'ui/frontend-current-date.php',
+        'ui/disable-comments-runtime.php',
     ];
 
     if (class_exists('WooCommerce')) {

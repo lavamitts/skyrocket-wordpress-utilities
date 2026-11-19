@@ -162,6 +162,18 @@ This provides a convenient way to target specific posts, pages and custom post t
 
 Provides shortcodes for displaying the current year and date.
 
+
+### Disable Comments
+
+*admin/settings/disable-comments.php*
+*disable-comments-runtime.php*
+
+Toggle global comment disabling under **Settings > Skyrocket Utilities > Disable comments**. When enabled:
+- Removes comment and trackback support from all post types.
+- Closes front-end comment forms, hides existing comments, and blocks direct submissions (`wp-comments-post.php`).
+- Disables comment RSS/Atom feeds, XML-RPC pingbacks, and `/wp/v2/comments` REST API routes.
+- Hides comment admin menus, dashboard widgets, admin bar icons, and redirects direct admin comment URLs.
+
 ### Skyrocket Utilities Settings
 
 Provides the central administration settings interface for the Skyrocket Utilities plugin, including settings registration, sanitisation, tab navigation, module loading and administration asset management.

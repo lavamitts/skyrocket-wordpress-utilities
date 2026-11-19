@@ -167,6 +167,10 @@ function swu_sanitize_options($input)
         $options['local_fonts_enabled'] = isset($input['local_fonts_enabled']) ? 1 : 0;
     }
 
+    if ($active_tab === 'disable-comments') {
+        $options['disable_comments_enabled'] = isset($input['disable_comments_enabled']) ? 1 : 0;
+    }
+
     return $options;
 }
 
@@ -184,6 +188,7 @@ function swu_render_settings_page()
         'login-logo' => 'Login logo',
         'menu-order' => 'Admin menu order',
         'local-fonts' => 'Local fonts',
+        'disable-comments' => 'Disable comments',
     ];
 
     $active_tab = isset($_GET['tab'])
@@ -223,6 +228,8 @@ function swu_render_settings_page()
                 require SWU_PATH . 'modules/admin/settings/local-fonts.php';
             } elseif ($active_tab === 'menu-order') {
                 require SWU_PATH . 'modules/admin/settings/menu-order.php';
+            } elseif ($active_tab === 'disable-comments') {
+                require SWU_PATH . 'modules/admin/settings/disable-comments.php';
             }
             ?>
 
