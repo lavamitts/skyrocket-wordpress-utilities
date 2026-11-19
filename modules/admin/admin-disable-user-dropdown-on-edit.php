@@ -1,4 +1,3 @@
-
 <?php
 /**
  * Hide the admin toolbar user account dropdown on content editing screens.
@@ -53,10 +52,10 @@ function swu_hide_admin_bar_user_dropdown()
     ?>
     <style>
         /* Keep the "Howdy, name" label visible, but hide the dropdown */
-            #wpadminbar #wp-admin-bar-my-account .ab-sub-wrapper {
-                display: none !important;
-            }
-        </style>
-        <?php
+        #wpadminbar #wp-admin-bar-my-account .ab-sub-wrapper {
+            display: none !important;
+        }
+    </style>
+    <?php
 }
 add_action('admin_head', 'swu_hide_admin_bar_user_dropdown');

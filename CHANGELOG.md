@@ -109,3 +109,7 @@ Provides shortcodes for displaying the current year and date.
 ## 1.2.5 - Addition of completely disable comments function
 
 - Added a toggle under **Settings > Skyrocket Utilities > Disable comments** to completely disable comments, pingbacks, comment feeds, `/wp/v2/comments` REST API endpoints, and comment admin menus/widgets across the site without deleting existing comment data.
+
+## 1.2.6 - Fix BOM in disable user dropdown
+
+- Newline character caused Updraft Plus warning re: possible BOM
