@@ -150,13 +150,31 @@ Provides grouped Blocksy live search results for posts, pages and Pavilion Event
 
 ## UI modules
 
+### Enqueue UI CSS
+
+*register-ui-css.php*
+
+Enqueues and registers custom CSS for the UI
+
+### Add custom blocks (simple icons)
+
+*swu-custom-blocks.php*
+
+Custom blocks for:
+
+- Person
+- Phone
+- Stars
+
 ### Add Singular Content Slug to the Body Class
+
+*body-add-slug-class.php*
 
 Adds the current post or page slug as an additional CSS class to the HTML body element on individual WordPress content views.
 
 This provides a convenient way to target specific posts, pages and custom post type entries with CSS or JavaScript, without requiring manually assigned classes or additional theme settings.
 
-### Current date shotrcode
+### Current date shortcode
 
 *frontend-current-date.php*
 

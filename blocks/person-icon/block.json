@@ -1,0 +1,20 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "swu/person-icon-block",
+    "version": "1.0.0",
+    "title": "Person icon paragraph",
+    "category": "text",
+    "icon": "admin-users",
+    "description": "A paragraph styled with a person icon.",
+    "supports": {
+        "html": false
+    },
+    "attributes": {
+        "personName": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "editorScript": "file:./index.js"
+}

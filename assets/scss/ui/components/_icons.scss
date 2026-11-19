@@ -1,0 +1,34 @@
+/* Icons */
+$base-padding-left: 30px;
+$admin-padding-left-increment: 25px;
+
+div.icon,
+p.icon {
+    background-repeat: no-repeat;
+    background-size: 24px 24px;
+    padding-left: $base-padding-left;
+    margin-bottom: 1rem;
+    background-position: 0 2px;
+}
+
+div.phone,
+p.phone {
+    background-image: url("../../images/icons/swu-icon-phone.webp");
+}
+
+div.person,
+p.person {
+    font-weight: bold;
+    font-variant: small-caps;
+    background-image: url("../../images/icons/swu-icon-person.webp");
+}
+
+div.pdf,
+p.pdf {
+    background-image: url("../../images/icons/swu-icon.webp");
+}
+
+div.stars,
+p.stars {
+    background-image: url("../../images/icons/swu-icon-stars.webp");
+}

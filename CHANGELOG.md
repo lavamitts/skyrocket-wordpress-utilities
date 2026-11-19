@@ -122,3 +122,7 @@ Provides shortcodes for displaying the current year and date.
 
 - Remove the no wrap from the plugin title column
 - Correct path to admin dashboard CSS
+
+# 1.2.9 - Initial icon blocks
+
+- Person, block and stars icons

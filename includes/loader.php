@@ -39,10 +39,12 @@ add_action('plugins_loaded', function () {
         'search/live-search-columnar-display.php',
 
         // UI enhancements
+        'ui/register-ui-css.php',
         'ui/body-add-slug-class.php',
         'ui/local-fonts-loader.php',
         'ui/frontend-current-date.php',
         'ui/disable-comments-runtime.php',
+        'ui/swu-custom-blocks.php',
     ];
 
     if (class_exists('WooCommerce')) {
