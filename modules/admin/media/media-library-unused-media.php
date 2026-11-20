@@ -19,248 +19,180 @@
 
 defined('ABSPATH') || exit;
 
-/**
- * Add the usage column to the Media Library.
- *
- * @param array $columns Existing Media Library columns.
- * @return array Modified columns.
- */
-function swu_media_library_usage_column(array $columns): array
-{
-
+add_filter('manage_upload_columns', function (array $columns): array {
     $new_columns = [];
-
     foreach ($columns as $key => $label) {
-
         $new_columns[$key] = $label;
-
-        // Insert the usage column after the attachment title.
         if ($key === 'title') {
             $new_columns['swu_usage'] = __('Usage', 'skyrocket');
         }
     }
-
-    // Append the column if the title column was not available.
     if (!isset($new_columns['swu_usage'])) {
         $new_columns['swu_usage'] = __('Usage', 'skyrocket');
     }
-
     return $new_columns;
-}
-
-add_filter(
-    'manage_upload_columns',
-    'swu_media_library_usage_column'
-);
+});
 
 /**
- * Determine whether an attachment is referenced by standard content.
- *
- * Checks attachment parent relationships, featured images, Gutenberg
- * and classic editor content, and WooCommerce product galleries.
- *
- * Results are cached for the duration of the current request.
- *
- * @param int $attachment_id Attachment post ID.
- * @return bool Whether a recognised reference exists.
+ * Build a map of [attachment_id => bool] for a batch of attachment IDs.
  */
-
-/**
- * Determine whether a media attachment is used by standard WordPress
- * content or a WooCommerce product category image.
- *
- * Checks:
- * - Attachment parent relationships.
- * - Featured images.
- * - WooCommerce product galleries.
- * - Standard content references, including Gutenberg image blocks.
- * - WooCommerce product category images.
- *
- * Results are cached for the duration of the request.
- *
- * @param int $attachment_id The attachment ID to check.
- *
- * @return bool Whether the attachment appears to be in use.
- */
-function swu_media_library_attachment_is_used(int $attachment_id): bool
+function swu_get_batch_attachment_usage(array $attachment_ids): array
 {
+    $attachment_ids = array_values(array_unique(array_map('intval', $attachment_ids)));
+    if (empty($attachment_ids)) {
+        return [];
+    }
 
-    static $cache = array();
-
-    if (isset($cache[$attachment_id])) {
-        return $cache[$attachment_id];
+    $results = array_fill_keys($attachment_ids, false);
+    $transient_key = 'swu_media_usage_' . md5(implode(',', $attachment_ids));
+    $cached = get_transient($transient_key);
+    if (is_array($cached)) {
+        return $cached;
     }
 
     global $wpdb;
+    $placeholders = implode(',', array_fill(0, count($attachment_ids), '%d'));
 
-    // Check whether the attachment has a parent post.
-    $attachment = get_post($attachment_id);
-
-    if ($attachment && $attachment->post_parent > 0) {
-        $parent_status = get_post_status($attachment->post_parent);
-
-        if ($parent_status && $parent_status !== 'trash') {
-            return $cache[$attachment_id] = true;
+    // 1. Parent post check (primed via _prime_post_caches).
+    _prime_post_caches($attachment_ids, false, true);
+    $parent_ids = [];
+    foreach ($attachment_ids as $id) {
+        $att = get_post($id);
+        if ($att && (int) $att->post_parent > 0) {
+            $parent_ids[$id] = (int) $att->post_parent;
+        }
+    }
+    if (!empty($parent_ids)) {
+        _prime_post_caches(array_values($parent_ids), false, false);
+        foreach ($parent_ids as $att_id => $parent_id) {
+            $status = get_post_status($parent_id);
+            if ($status && $status !== 'trash') {
+                $results[$att_id] = true;
+            }
         }
     }
 
-    // Check featured images.
-    $featured_image = $wpdb->get_var(
+    // 2. Featured images (_thumbnail_id).
+    $thumb_rows = $wpdb->get_col(
         $wpdb->prepare(
-            "SELECT meta_id
-            FROM {$wpdb->postmeta}
-            WHERE meta_key = '_thumbnail_id'
-            AND meta_value = %d
-            LIMIT 1",
-            $attachment_id
+            "SELECT DISTINCT meta_value FROM {$wpdb->postmeta}
+             WHERE meta_key = '_thumbnail_id' AND meta_value IN ($placeholders)",
+            $attachment_ids
         )
     );
-
-    if ($featured_image) {
-        return $cache[$attachment_id] = true;
+    foreach ($thumb_rows as $id) {
+        $results[(int) $id] = true;
     }
 
-    // Check WooCommerce product galleries.
-    $product_gallery = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT meta_id
-            FROM {$wpdb->postmeta}
-            WHERE meta_key = '_product_image_gallery'
-            AND FIND_IN_SET(%d, meta_value)
-            LIMIT 1",
-            $attachment_id
-        )
+    // 3. WooCommerce product galleries (_product_image_gallery) - fetched once, parsed in PHP.
+    $galleries = $wpdb->get_col(
+        "SELECT meta_value FROM {$wpdb->postmeta}
+         WHERE meta_key = '_product_image_gallery' AND meta_value != ''"
     );
-
-    if ($product_gallery) {
-        return $cache[$attachment_id] = true;
+    if (!empty($galleries)) {
+        $target_set = array_flip($attachment_ids);
+        foreach ($galleries as $csv) {
+            foreach (explode(',', $csv) as $gallery_id) {
+                $gid = (int) trim($gallery_id);
+                if ($gid > 0 && isset($target_set[$gid])) {
+                    $results[$gid] = true;
+                }
+            }
+        }
     }
 
-    // Check WooCommerce product category images.
+    // 4. WooCommerce product category thumbnails.
     if (taxonomy_exists('product_cat')) {
-        $category_image = $wpdb->get_var(
+        $cat_rows = $wpdb->get_col(
             $wpdb->prepare(
-                "SELECT meta_id
-                FROM {$wpdb->termmeta}
-                WHERE meta_key = 'thumbnail_id'
-                AND meta_value = %d
-                LIMIT 1",
-                $attachment_id
+                "SELECT DISTINCT meta_value FROM {$wpdb->termmeta}
+                 WHERE meta_key = 'thumbnail_id' AND meta_value IN ($placeholders)",
+                $attachment_ids
             )
         );
-
-        if ($category_image) {
-            return $cache[$attachment_id] = true;
+        foreach ($cat_rows as $id) {
+            $results[(int) $id] = true;
         }
     }
 
-    // Check attachment references in standard post content.
-    $attachment_url = wp_get_attachment_url($attachment_id);
+    // 5. Post content check for remaining unresolved IDs.
+    $remaining = array_keys(array_filter($results, fn($v) => !$v));
+    if (!empty($remaining)) {
+        $post_types = get_post_types(['public' => true], 'names');
+        $post_types = array_diff($post_types, ['attachment']);
+        if (!empty($post_types)) {
+            $pt_placeholders = implode(',', array_fill(0, count($post_types), '%s'));
+            $contents = $wpdb->get_col(
+                $wpdb->prepare(
+                    "SELECT post_content FROM {$wpdb->posts}
+                     WHERE post_type IN ($pt_placeholders)
+                     AND post_status NOT IN ('trash', 'auto-draft')
+                     AND post_content != ''",
+                    $post_types
+                )
+            );
 
-    $content_patterns = array(
-        '%wp-image-' . $attachment_id . '%',
-        '%"id":' . $attachment_id . '%',
-        '%"id": ' . $attachment_id . '%',
-        '%data-id="' . $attachment_id . '"%',
-    );
-
-    if ($attachment_url) {
-        $content_patterns[] = '%' . $wpdb->esc_like($attachment_url) . '%';
+            if (!empty($contents)) {
+                $joined_content = implode("\n", $contents);
+                foreach ($remaining as $id) {
+                    $url = wp_get_attachment_url($id);
+                    $needles = [
+                        'wp-image-' . $id,
+                        '"id":' . $id,
+                        '"id": ' . $id,
+                        'data-id="' . $id . '"',
+                    ];
+                    if ($url) {
+                        $needles[] = $url;
+                    }
+                    foreach ($needles as $needle) {
+                        if (strpos($joined_content, $needle) !== false) {
+                            $results[$id] = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    $content_conditions = array();
-
-    foreach ($content_patterns as $pattern) {
-        $content_conditions[] = 'post_content LIKE %s';
-    }
-
-    $content_query = "
-        SELECT ID
-        FROM {$wpdb->posts}
-        WHERE post_type != 'attachment'
-        AND post_status NOT IN ('trash', 'auto-draft')
-        AND (" . implode(' OR ', $content_conditions) . ")
-        LIMIT 1
-    ";
-
-    $content_used = $wpdb->get_var(
-        $wpdb->prepare($content_query, $content_patterns)
-    );
-
-    if ($content_used) {
-        return $cache[$attachment_id] = true;
-    }
-
-    return $cache[$attachment_id] = false;
+    set_transient($transient_key, $results, 12 * HOUR_IN_SECONDS);
+    return $results;
 }
 
-
-/**
- * Display attachment usage information in the Media Library.
- *
- * @param string $column_name Current column name.
- * @param int    $post_id     Attachment post ID.
- * @return void
- */
-
-/**
- * Display attachment usage information in the Media Library.
- *
- * @param string $column_name Current column name.
- * @param int    $post_id     Attachment post ID.
- * @return void
- */
-function swu_media_library_usage_content(
-    string $column_name,
-    int $post_id
-): void {
-
+add_action('manage_media_custom_column', function (string $column_name, int $post_id): void {
     if ($column_name !== 'swu_usage') {
         return;
     }
 
-    $is_used = swu_media_library_attachment_is_used($post_id);
-
-    if ($is_used) {
-
-        $label = __('In use', 'skyrocket');
-        $class = 'swu-media-usage-in-use';
-
-    } else {
-
-        $label = __('Potentially unused', 'skyrocket');
-        $class = 'swu-media-usage-unused';
-
+    static $page_map = null;
+    if ($page_map === null) {
+        global $wp_query;
+        $ids = [];
+        if (!empty($wp_query->posts)) {
+            foreach ($wp_query->posts as $p) {
+                $ids[] = is_object($p) ? (int) $p->ID : (int) $p;
+            }
+        }
+        $page_map = swu_get_batch_attachment_usage($ids);
     }
+
+    $is_used = !empty($page_map[$post_id]);
+    $label = $is_used ? __('In use', 'skyrocket') : __('Potentially unused', 'skyrocket');
+    $class = $is_used ? 'swu-media-usage-in-use' : 'swu-media-usage-unused';
 
     printf(
         '<span class="swu-media-usage %s">%s</span>',
         esc_attr($class),
         esc_html($label)
     );
-}
+}, 10, 2);
 
-add_action(
-    'manage_media_custom_column',
-    'swu_media_library_usage_content',
-    10,
-    2
-);
-
-/**
- * Add styling to the Media Library usage badges.
- *
- * @return void
- */
-function swu_media_library_usage_styles(): void
-{
-
+add_action('admin_head', function (): void {
     $screen = get_current_screen();
-
     if (!$screen || $screen->base !== 'upload') {
         return;
     }
-
     ?>
     <style>
         .swu-media-usage {
@@ -284,16 +216,4 @@ function swu_media_library_usage_styles(): void
         }
     </style>
     <?php
-}
-
-add_action(
-    'admin_head',
-    'swu_media_library_usage_styles'
-);
-
-add_action(
-    'manage_media_custom_column',
-    'swu_media_library_usage_content',
-    10,
-    2
-);
+});

@@ -139,3 +139,7 @@ Provides shortcodes for displaying the current year and date.
 - Move to media bootstrapper
 - Document the common library and add date utils
 - Exclude categories from blog
+
+## 1.3.2 - Performance fixes
+
+- Refactor media-library-unused-media to remove N+1s
