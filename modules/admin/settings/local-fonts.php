@@ -11,7 +11,7 @@ $options = get_option('swu_options', []);
 $is_enabled = !empty($options['local_fonts_enabled']);
 
 // Check if the physical CSS asset exists in the active child theme
-$child_css_rel = '/assets/fonts/local-fonts.css';
+$child_css_rel = '/assets/css/local-fonts.css';
 $child_css_path = get_stylesheet_directory() . $child_css_rel;
 $file_exists = file_exists($child_css_path);
 ?>

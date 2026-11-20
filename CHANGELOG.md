@@ -126,3 +126,8 @@ Provides shortcodes for displaying the current year and date.
 ## 1.2.9 - Initial icon blocks
 
 - Person, block and stars icons
+
+## 1.3.0 - Additional icons and move of local fonts CSS
+
+- Additional icons (Document, email, facebook, instagram, pdf, price, video, web)
+- Move local fonts CSS folder to CSS not fonts

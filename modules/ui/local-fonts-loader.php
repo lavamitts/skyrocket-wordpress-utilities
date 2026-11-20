@@ -18,7 +18,7 @@ function swu_is_local_fonts_active()
         return false;
     }
 
-    $file_path = get_stylesheet_directory() . '/assets/fonts/local-fonts.css';
+    $file_path = get_stylesheet_directory() . '/assets/css/local-fonts.css';
     return file_exists($file_path);
 }
 
@@ -42,7 +42,7 @@ add_action('wp_enqueue_scripts', function () {
     }
 
     // Enqueue local font definitions from the child theme with cache-busting.
-    $rel_path = '/assets/fonts/local-fonts.css';
+    $rel_path = '/assets/css/local-fonts.css';
     $file_path = get_stylesheet_directory() . $rel_path;
 
     if (file_exists($file_path)) {
@@ -92,7 +92,7 @@ add_action('enqueue_block_editor_assets', function () {
         }
     }
 
-    $rel_path = '/assets/fonts/local-fonts.css';
+    $rel_path = '/assets/css/local-fonts.css';
     $file_path = get_stylesheet_directory() . $rel_path;
 
     if (file_exists($file_path)) {
