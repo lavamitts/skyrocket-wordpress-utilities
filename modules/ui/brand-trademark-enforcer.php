@@ -2,18 +2,18 @@
 /**
  * Brand Trademark Enforcer
  *
- * Processes the complete frontend HTML output and automatically appends
- * registered trademark symbols to specified brand terms.
+ * Processes visible text within the frontend HTML body.
  *
  * Features:
- * - Processes the complete frontend HTML, not just post content.
+ * - Processes the complete frontend body, including menus, headers,
+ *   footers, widgets and page content.
  * - Normalises existing registered trademark symbols into superscripts.
  * - Adds missing registered trademark symbols to specified brand terms.
  * - Prevents duplicate trademark symbols.
- * - Removes consecutive duplicate trademark superscripts.
  * - Supports case-insensitive brand matching.
  * - Excludes elements carrying the do-not-enforce-brand-trademark class.
- * - Preserves original HTML markup.
+ * - Ignores HTML attributes, URLs, scripts, styles, JSON and SVG.
+ * - Ignores hidden and non-content elements.
  *
  * @package Skyrocket
  */
@@ -38,283 +38,64 @@ function swu_brand_trademark_terms()
 
 
 /**
- * Check whether an HTML fragment is a tag.
+ * Retrieve eligible text nodes from the document fragment.
  *
- * @param string $part HTML fragment.
- * @return array|false Tag information or false.
+ * Excludes technical, hidden and explicitly excluded elements.
+ *
+ * @param DOMDocument $dom     Document containing the HTML fragment.
+ * @param DOMElement  $wrapper Fragment wrapper.
+ * @return array
  */
-function swu_brand_trademark_get_tag_info($part)
+function swu_brand_trademark_get_text_nodes($dom, $wrapper)
 {
-    if (
-        !preg_match(
-            '/^<\s*(\/?)\s*([a-zA-Z][a-zA-Z0-9:-]*)\b/',
-            $part,
-            $match
-        )
-    ) {
-        return false;
+    $xpath = new DOMXPath($dom);
+
+    $query = './/text()[
+        not(ancestor::script)
+        and not(ancestor::style)
+        and not(ancestor::noscript)
+        and not(ancestor::template)
+        and not(ancestor::svg)
+        and not(ancestor::code)
+        and not(ancestor::pre)
+        and not(ancestor::textarea)
+        and not(ancestor::select)
+        and not(ancestor::option)
+        and not(ancestor::canvas)
+        and not(ancestor::iframe)
+        and not(ancestor::head)
+        and not(ancestor::*[@hidden])
+        and not(ancestor::*[@aria-hidden="true"])
+        and not(ancestor::*[
+            contains(
+                concat(" ", normalize-space(@class), " "),
+                " do-not-enforce-brand-trademark "
+            )
+        ])
+        and not(ancestor::*[
+            contains(
+                translate(@style, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),
+                "display:none"
+            )
+            or
+            contains(
+                translate(@style, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),
+                "visibility:hidden"
+            )
+        ])
+    ]';
+
+    $nodes = $xpath->query($query, $wrapper);
+
+    if (!$nodes) {
+        return [];
     }
 
-    return [
-        'closing' => $match[1] === '/',
-        'tag' => strtolower($match[2]),
-    ];
-}
+    // Return a static array before modifying the DOM.
+    $result = [];
 
-
-/**
- * Check whether an opening HTML tag carries the exclusion class.
- *
- * The class can appear alongside any number of other CSS classes.
- *
- * @param string $tag HTML opening tag.
- * @return bool
- */
-function swu_brand_trademark_is_excluded($tag)
-{
-    if (
-        !preg_match(
-            '/\bclass\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s>]+))/i',
-            $tag,
-            $match
-        )
-    ) {
-        return false;
-    }
-
-    $class_string = $match[1] ?? '';
-
-    if ($class_string === '' && isset($match[2])) {
-        $class_string = $match[2];
-    }
-
-    if ($class_string === '' && isset($match[3])) {
-        $class_string = $match[3];
-    }
-
-    $classes = preg_split('/\s+/', trim($class_string));
-
-    return in_array(
-        'do-not-enforce-brand-trademark',
-        $classes,
-        true
-    );
-}
-
-
-/**
- * Update the HTML element stack.
- *
- * Tracks nested elements and their exclusion status.
- *
- * @param string $part HTML fragment.
- * @param array  $stack Current element stack.
- * @return array Updated element stack.
- */
-function swu_brand_trademark_update_stack($part, &$stack)
-{
-    $info = swu_brand_trademark_get_tag_info($part);
-
-    if (!$info) {
-        return false;
-    }
-
-    $tag = $info['tag'];
-
-    // Handle closing tags.
-    if ($info['closing']) {
-
-        // Find the corresponding opening element.
-        for ($i = count($stack) - 1; $i >= 0; $i--) {
-
-            if ($stack[$i]['tag'] === $tag) {
-
-                // Remove this element and any unclosed descendants.
-                $stack = array_slice($stack, 0, $i);
-
-                break;
-            }
-        }
-
-        return true;
-    }
-
-    // HTML elements that cannot contain child elements.
-    $void_tags = [
-        'area',
-        'base',
-        'br',
-        'col',
-        'embed',
-        'hr',
-        'img',
-        'input',
-        'link',
-        'meta',
-        'param',
-        'source',
-        'track',
-        'wbr',
-    ];
-
-    // Don't add self-closing or void elements to the stack.
-    if (
-        in_array($tag, $void_tags, true) ||
-        preg_match('/\/\s*>$/', $part)
-    ) {
-        return true;
-    }
-
-    // Record the opening element and its exclusion status.
-    $stack[] = [
-        'tag' => $tag,
-        'excluded' => swu_brand_trademark_is_excluded($part),
-    ];
-
-    return true;
-}
-
-
-/**
- * Determine whether the current position is inside an excluded element.
- *
- * @param array $stack Current element stack.
- * @return bool
- */
-function swu_brand_trademark_is_inside_excluded($stack)
-{
-    foreach ($stack as $element) {
-        if ($element['excluded']) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-
-/**
- * Determine whether the current position is inside a particular element.
- *
- * @param array  $stack Current element stack.
- * @param string $tag   Element name.
- * @return bool
- */
-function swu_brand_trademark_is_inside_tag($stack, $tag)
-{
-    foreach ($stack as $element) {
-        if ($element['tag'] === $tag) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-
-/**
- * Identify an existing trademark superscript immediately following a term.
- *
- * Also identifies any consecutive duplicate trademark superscripts.
- *
- * @param array  $parts     HTML fragments.
- * @param int    $index     Current text fragment index.
- * @param string $remaining Text following the matched term.
- * @return array|false Existing superscript positions or false.
- */
-function swu_brand_trademark_find_existing_sup(
-    &$parts,
-    $index,
-    $remaining
-) {
-    // There must be no additional text after the matched term.
-    if (trim($remaining) !== '') {
-        return false;
-    }
-
-    $count = count($parts);
-    $position = $index + 1;
-
-    // Skip whitespace between the term and its superscript.
-    while (
-        $position < $count &&
-        trim($parts[$position]) === '' &&
-        !swu_brand_trademark_get_tag_info($parts[$position])
-    ) {
-        $position++;
-    }
-
-    // Look for an opening superscript.
-    if (
-        !isset($parts[$position]) ||
-        !preg_match('/^<sup\b[^>]*>$/i', $parts[$position])
-    ) {
-        return false;
-    }
-
-    $open = $position;
-    $text = $position + 1;
-    $close = $position + 2;
-
-    // Verify that the superscript contains a registered trademark.
-    if (
-        !isset($parts[$text], $parts[$close]) ||
-        !preg_match(
-            '/^\s*(?:®|&reg;|&#0*174;|&#x0*ae;)\s*$/i',
-            $parts[$text]
-        ) ||
-        !preg_match('/^<\/sup\s*>$/i', $parts[$close])
-    ) {
-        return false;
-    }
-
-    $result = [
-        'found' => true,
-        'duplicates' => [],
-    ];
-
-    // Look for immediately consecutive duplicate trademark superscripts.
-    $position = $close + 1;
-
-    while ($position < $count) {
-
-        // Preserve whitespace between superscripts.
-        $next = $position;
-
-        while (
-            $next < $count &&
-            trim($parts[$next]) === '' &&
-            !swu_brand_trademark_get_tag_info($parts[$next])
-        ) {
-            $next++;
-        }
-
-        // No further superscript.
-        if (
-            !isset($parts[$next]) ||
-            !preg_match('/^<sup\b[^>]*>$/i', $parts[$next])
-        ) {
-            break;
-        }
-
-        // Check its contents.
-        if (
-            !isset($parts[$next + 1], $parts[$next + 2]) ||
-            !preg_match(
-                '/^\s*(?:®|&reg;|&#0*174;|&#x0*ae;)\s*$/i',
-                $parts[$next + 1]
-            ) ||
-            !preg_match('/^<\/sup\s*>$/i', $parts[$next + 2])
-        ) {
-            break;
-        }
-
-        // Mark the duplicate superscript for removal.
-        $result['duplicates'][] = $next;
-        $result['duplicates'][] = $next + 1;
-        $result['duplicates'][] = $next + 2;
-
-        $position = $next + 3;
+    foreach ($nodes as $node) {
+        $result[] = $node;
     }
 
     return $result;
@@ -322,129 +103,162 @@ function swu_brand_trademark_find_existing_sup(
 
 
 /**
- * Normalise existing registered trademark symbols.
+ * Replace a text node with a document fragment.
  *
- * Wraps standalone trademark symbols in <sup> elements.
- *
- * Existing superscripts and excluded elements are left untouched.
- *
- * @param string $html Complete HTML document.
- * @return string Normalised HTML.
+ * @param DOMText            $node     Original text node.
+ * @param DOMDocumentFragment $fragment Replacement fragment.
+ * @return void
  */
-function swu_normalise_brand_trademarks($html)
+function swu_brand_trademark_replace_node($node, $fragment)
 {
-    if (!is_string($html) || $html === '') {
-        return $html;
+    if ($node->parentNode) {
+        $node->parentNode->replaceChild($fragment, $node);
     }
-
-    $parts = wp_html_split($html);
-
-    if (!$parts) {
-        return $html;
-    }
-
-    $stack = [];
-
-    foreach ($parts as &$part) {
-
-        // Update the element stack when encountering HTML tags.
-        if (swu_brand_trademark_update_stack($part, $stack)) {
-            continue;
-        }
-
-        // Respect excluded elements.
-        if (swu_brand_trademark_is_inside_excluded($stack)) {
-            continue;
-        }
-
-        // Don't modify existing superscript content.
-        if (swu_brand_trademark_is_inside_tag($stack, 'sup')) {
-            continue;
-        }
-
-        // Normalise standalone registered trademark symbols.
-        $part = preg_replace(
-            '/(&reg;|&#0*174;|&#x0*ae;|®)/i',
-            '<sup>$1</sup>',
-            $part
-        );
-    }
-
-    unset($part);
-
-    return implode('', $parts);
 }
 
 
 /**
- * Enforce registered trademarks on specified brand terms.
+ * Normalise existing registered trademark symbols.
  *
- * Existing trademarks are recognised and duplicate superscripts removed.
+ * Converts standalone ® symbols into superscript elements.
  *
- * @param string $html Complete HTML document.
- * @return string Processed HTML document.
+ * Existing superscript elements are not modified.
+ *
+ * @param DOMDocument $dom     Document.
+ * @param DOMElement  $wrapper Fragment wrapper.
+ * @return void
  */
-function swu_enforce_brand_trademarks($html)
+function swu_brand_trademark_normalise($dom, $wrapper)
 {
-    if (
-        !is_string($html) ||
-        $html === '' ||
-        !str_contains($html, '<')
+    $nodes = swu_brand_trademark_get_text_nodes($dom, $wrapper);
+
+    foreach ($nodes as $node) {
+
+        $text = $node->nodeValue;
+
+        if (!str_contains($text, '®')) {
+            continue;
+        }
+
+        // Locate existing registered trademark symbols.
+        $matches = [];
+
+        preg_match_all('/®/u', $text, $matches, PREG_OFFSET_CAPTURE);
+
+        if (empty($matches[0])) {
+            continue;
+        }
+
+        $fragment = $dom->createDocumentFragment();
+        $offset = 0;
+
+        foreach ($matches[0] as $match) {
+
+            $position = $match[1];
+
+            // Preserve preceding text.
+            if ($position > $offset) {
+                $fragment->appendChild(
+                    $dom->createTextNode(
+                        substr($text, $offset, $position - $offset)
+                    )
+                );
+            }
+
+            // Create the superscript element.
+            $sup = $dom->createElement('sup');
+
+            $sup->appendChild(
+                $dom->createTextNode('®')
+            );
+
+            $fragment->appendChild($sup);
+
+            $offset = $position + strlen($match[0]);
+        }
+
+        // Preserve remaining text.
+        if ($offset < strlen($text)) {
+            $fragment->appendChild(
+                $dom->createTextNode(substr($text, $offset))
+            );
+        }
+
+        swu_brand_trademark_replace_node($node, $fragment);
+    }
+}
+
+
+/**
+ * Check whether a node is an existing registered trademark superscript.
+ *
+ * @param DOMNode|null $node Node to inspect.
+ * @return bool
+ */
+function swu_brand_trademark_is_sup($node)
+{
+    return (
+        $node instanceof DOMElement &&
+        strtolower($node->tagName) === 'sup' &&
+        trim($node->textContent) === '®'
+    );
+}
+
+
+/**
+ * Find the next significant sibling of a node.
+ *
+ * Whitespace-only text nodes are ignored.
+ *
+ * @param DOMNode $node Starting node.
+ * @return DOMNode|null
+ */
+function swu_brand_trademark_next_sibling($node)
+{
+    $next = $node->nextSibling;
+
+    while (
+        $next &&
+        $next->nodeType === XML_TEXT_NODE &&
+        trim($next->nodeValue) === ''
     ) {
-        return $html;
+        $next = $next->nextSibling;
     }
 
-    // First pass: normalise all existing trademark symbols.
-    $html = swu_normalise_brand_trademarks($html);
+    return $next;
+}
 
-    // Build the brand matching expression.
+
+/**
+ * Add missing registered trademark symbols to brand terms.
+ *
+ * Existing superscripts are recognised and preserved.
+ *
+ * @param DOMDocument $dom     Document.
+ * @param DOMElement  $wrapper Fragment wrapper.
+ * @return void
+ */
+function swu_brand_trademark_enforce($dom, $wrapper)
+{
     $terms = array_map(
-        'preg_quote',
+        static fn($term) => preg_quote($term, '/'),
         swu_brand_trademark_terms()
     );
 
-    $pattern = '/\b(' . implode('|', $terms) . ')\b/i';
+    $pattern = '/(?<![\p{L}\p{N}_])(' .
+        implode('|', $terms) .
+        ')(?![\p{L}\p{N}_])/iu';
 
-    // Split the normalised HTML into tags and text.
-    $parts = wp_html_split($html);
+    $nodes = swu_brand_trademark_get_text_nodes($dom, $wrapper);
 
-    if (!$parts) {
-        return $html;
-    }
+    foreach ($nodes as $node) {
 
-    $stack = [];
-    $consumed = [];
+        $text = $node->nodeValue;
 
-    // Process each HTML fragment.
-    foreach ($parts as $index => &$part) {
-
-        // Remove duplicate superscript fragments identified earlier.
-        if (isset($consumed[$index])) {
-            $part = '';
+        if (!preg_match($pattern, $text)) {
             continue;
         }
 
-        // Maintain the HTML element stack.
-        if (swu_brand_trademark_update_stack($part, $stack)) {
-            continue;
-        }
-
-        // Ignore excluded elements.
-        if (swu_brand_trademark_is_inside_excluded($stack)) {
-            continue;
-        }
-
-        // Ignore existing superscript content.
-        if (swu_brand_trademark_is_inside_tag($stack, 'sup')) {
-            continue;
-        }
-
-        // Only process text fragments containing a brand term.
-        if (!preg_match($pattern, $part)) {
-            continue;
-        }
-
-        $text = $part;
         $matches = [];
 
         preg_match_all(
@@ -454,66 +268,240 @@ function swu_enforce_brand_trademarks($html)
             PREG_OFFSET_CAPTURE
         );
 
-        $output = '';
-        $offset = 0;
+        if (empty($matches[0])) {
+            continue;
+        }
 
-        foreach ($matches[0] as $match) {
+        $fragment = $dom->createDocumentFragment();
+        $offset = 0;
+        $match_count = count($matches[0]);
+
+        foreach ($matches[0] as $index => $match) {
 
             $term = $match[0];
             $position = $match[1];
 
-            // Preserve text preceding the matched term.
-            $output .= substr(
-                $text,
-                $offset,
-                $position - $offset
-            );
+            // Preserve preceding text.
+            if ($position > $offset) {
+                $fragment->appendChild(
+                    $dom->createTextNode(
+                        substr($text, $offset, $position - $offset)
+                    )
+                );
+            }
 
             // Preserve the original term and capitalisation.
-            $output .= $term;
+            $fragment->appendChild(
+                $dom->createTextNode($term)
+            );
 
             $end = $position + strlen($term);
 
-            // Check for an existing trademark superscript.
-            $existing = swu_brand_trademark_find_existing_sup(
-                $parts,
-                $index,
-                substr($text, $end)
-            );
+            // Check whether the term is followed by an existing ®.
+            $already_marked = false;
 
-            if ($existing) {
+            // An existing superscript can follow the original text node
+            // when the trademark was normalised in the first pass.
+            if (
+                $index === $match_count - 1 &&
+                trim(substr($text, $end)) === ''
+            ) {
+                $next = swu_brand_trademark_next_sibling($node);
 
-                // Mark consecutive duplicate superscripts for removal.
-                foreach ($existing['duplicates'] as $duplicate_index) {
-                    $consumed[$duplicate_index] = true;
-                }
+                $already_marked = swu_brand_trademark_is_sup($next);
+            }
 
-            } else {
+            if (!$already_marked) {
 
-                // No existing trademark: append one.
-                $output .= '<sup>®</sup>';
+                $sup = $dom->createElement('sup');
+
+                $sup->appendChild(
+                    $dom->createTextNode('®')
+                );
+
+                $fragment->appendChild($sup);
             }
 
             $offset = $end;
         }
 
         // Preserve remaining text.
-        $output .= substr($text, $offset);
+        if ($offset < strlen($text)) {
+            $fragment->appendChild(
+                $dom->createTextNode(substr($text, $offset))
+            );
+        }
 
-        $part = $output;
+        swu_brand_trademark_replace_node($node, $fragment);
+    }
+}
+
+
+/**
+ * Remove consecutive duplicate registered trademark superscripts.
+ *
+ * Only operates within eligible body content.
+ *
+ * @param DOMDocument $dom     Document.
+ * @param DOMElement  $wrapper Fragment wrapper.
+ * @return void
+ */
+function swu_brand_trademark_remove_duplicates($dom, $wrapper)
+{
+    $xpath = new DOMXPath($dom);
+
+    $query = './/sup[
+        not(ancestor::*[
+            contains(
+                concat(" ", normalize-space(@class), " "),
+                " do-not-enforce-brand-trademark "
+            )
+        ])
+    ]';
+
+    $nodes = $xpath->query($query, $wrapper);
+
+    if (!$nodes) {
+        return;
     }
 
-    unset($part);
+    // Use a static array because nodes will be removed.
+    $superscripts = [];
 
-    return implode('', $parts);
+    foreach ($nodes as $node) {
+        if (swu_brand_trademark_is_sup($node)) {
+            $superscripts[] = $node;
+        }
+    }
+
+    foreach ($superscripts as $node) {
+
+        if (!$node->parentNode) {
+            continue;
+        }
+
+        $previous = $node->previousSibling;
+
+        // Ignore intervening whitespace.
+        while (
+            $previous &&
+            $previous->nodeType === XML_TEXT_NODE &&
+            trim($previous->nodeValue) === ''
+        ) {
+            $previous = $previous->previousSibling;
+        }
+
+        // Remove consecutive duplicate superscripts.
+        if (swu_brand_trademark_is_sup($previous)) {
+            $node->parentNode->removeChild($node);
+        }
+    }
+}
+
+
+/**
+ * Process the HTML body fragment.
+ *
+ * @param string $html Body HTML.
+ * @return string Processed body HTML.
+ */
+function swu_brand_trademark_process_body($html)
+{
+    if (!class_exists('DOMDocument')) {
+        return $html;
+    }
+
+    // Create an isolated document fragment.
+    $dom = new DOMDocument('1.0', 'UTF-8');
+
+    $previous_errors = libxml_use_internal_errors(true);
+
+    $loaded = $dom->loadHTML(
+        '<?xml encoding="UTF-8"><div id="swu-brand-trademark-wrapper">' .
+        $html .
+        '</div>',
+        LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+    );
+
+    libxml_clear_errors();
+
+    libxml_use_internal_errors($previous_errors);
+
+    if (!$loaded) {
+        return $html;
+    }
+
+    $wrapper = $dom->getElementById(
+        'swu-brand-trademark-wrapper'
+    );
+
+    if (!$wrapper) {
+        return $html;
+    }
+
+    // Pass 1: normalise existing trademark symbols.
+    swu_brand_trademark_normalise($dom, $wrapper);
+
+    // Pass 2: add trademarks to specified brand terms.
+    swu_brand_trademark_enforce($dom, $wrapper);
+
+    // Pass 3: remove consecutive duplicate superscripts.
+    swu_brand_trademark_remove_duplicates($dom, $wrapper);
+
+    // Extract the processed body contents.
+    $output = '';
+
+    foreach ($wrapper->childNodes as $child) {
+        $output .= $dom->saveHTML($child);
+    }
+
+    return $output;
+}
+
+
+/**
+ * Process the complete frontend HTML document.
+ *
+ * Only the contents of the body element are passed to the processor.
+ * The document head, HTML attributes and other document structure
+ * remain outside the processing scope.
+ *
+ * @param string $html Complete HTML document.
+ * @return string Processed HTML document.
+ */
+function swu_enforce_brand_trademarks($html)
+{
+    if (
+        !is_string($html) ||
+        $html === '' ||
+        !str_contains($html, '<body')
+    ) {
+        return $html;
+    }
+
+    // Isolate the body contents.
+    $result = preg_replace_callback(
+        '/(<body\b[^>]*>)(.*?)(<\/body\s*>)/is',
+        static function ($matches) {
+
+            return (
+                $matches[1] .
+                swu_brand_trademark_process_body($matches[2]) .
+                $matches[3]
+            );
+        },
+        $html,
+        1
+    );
+
+    return $result ?? $html;
 }
 
 
 /**
  * Start frontend output buffering.
  *
- * Processes the complete HTML response rather than individual WordPress
- * content filters.
+ * Processes the completed frontend HTML response.
  */
 function swu_start_brand_trademark_buffer()
 {

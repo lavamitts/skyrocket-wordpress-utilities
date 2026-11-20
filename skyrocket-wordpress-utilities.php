@@ -33,7 +33,7 @@ unset($github_updater_config);
 // Helper functions
 require_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
 
-// Load the module loader.
+// Load the module loader
 require_once SWU_PATH . 'includes/loader.php';
 
 // Load CSS assets

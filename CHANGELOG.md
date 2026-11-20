@@ -148,6 +148,7 @@ Provides shortcodes for displaying the current year and date.
 
 - Move brand trademark enforcer from JS to PHP
 
-## 1.3.4 - Brand trademark enforcer - corrections
+## 1.3.4 - Fix serious issues with brand trademark enforcer
 
-- Works now with menu entries and picks up double entries
+- Fix serious issues with brand trademark enforcer
+- No longer operates on metadata, scripts or URLs
