@@ -32,24 +32,73 @@ p.icon {
   background-position: 0 2px;
 }
 
-div.phone,
-p.phone {
-  background-image: url("../../images/icons/swu-icon-phone.webp");
-}
-
 div.person,
 p.person {
   font-weight: bold;
   font-variant: small-caps;
-  background-image: url("../../images/icons/swu-icon-person.webp");
 }
 
-div.pdf,
-p.pdf {
-  background-image: url("../../images/icons/swu-icon.webp");
+div.date,
+p.date {
+  background-image: url("../../images/icons/swu-icon-date.svg");
+}
+
+div.email,
+p.email {
+  background-image: url("../../images/icons/swu-icon-email.svg");
+}
+
+div.facebook,
+p.facebook {
+  background-image: url("../../images/icons/swu-icon-facebook.svg");
+}
+
+div.instagram,
+p.instagram {
+  background-image: url("../../images/icons/swu-icon-instagram.svg");
+}
+
+div.person,
+p.person {
+  background-image: url("../../images/icons/swu-icon-person.svg");
+}
+
+div.phone,
+p.phone {
+  background-image: url("../../images/icons/swu-icon-phone.svg");
+}
+
+div.price,
+p.price {
+  background-image: url("../../images/icons/swu-icon-price.svg");
 }
 
 div.stars,
 p.stars {
-  background-image: url("../../images/icons/swu-icon-stars.webp");
+  background-image: url("../../images/icons/swu-icon-stars.svg");
+}
+
+div.time,
+p.time {
+  background-image: url("../../images/icons/swu-icon-time.svg");
+}
+
+div.video,
+p.video {
+  background-image: url("../../images/icons/swu-icon-video.svg");
+}
+
+div.web,
+p.web {
+  background-image: url("../../images/icons/swu-icon-web.svg");
+}
+
+div.pdf,
+p.pdf {
+  background-image: url("../../images/icons/swu-icon-pdf.svg");
+}
+
+div.document,
+p.document {
+  background-image: url("../../images/icons/swu-icon-document.svg");
 }

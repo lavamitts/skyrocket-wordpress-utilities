@@ -11,24 +11,17 @@ p.icon {
     background-position: 0 2px;
 }
 
-div.phone,
-p.phone {
-    background-image: url("../../images/icons/swu-icon-phone.webp");
-}
-
 div.person,
 p.person {
     font-weight: bold;
     font-variant: small-caps;
-    background-image: url("../../images/icons/swu-icon-person.webp");
 }
 
-div.pdf,
-p.pdf {
-    background-image: url("../../images/icons/swu-icon.webp");
-}
+$icons: (date, email, facebook, instagram, person, phone, price, stars, time, video, web, pdf, document);
 
-div.stars,
-p.stars {
-    background-image: url("../../images/icons/swu-icon-stars.webp");
+@each $icon in $icons {
+    div.#{$icon},
+    p.#{$icon} {
+        background-image: url("../../images/icons/swu-icon-#{$icon}.svg");
+    }
 }
