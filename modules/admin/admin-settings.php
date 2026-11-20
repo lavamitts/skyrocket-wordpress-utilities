@@ -171,6 +171,22 @@ function swu_sanitize_options($input)
         $options['disable_comments_enabled'] = isset($input['disable_comments_enabled']) ? 1 : 0;
     }
 
+    if ($active_tab === 'blog-categories') {
+        $selected_ids = [];
+
+        if (isset($input['excluded_blog_categories']) && is_array($input['excluded_blog_categories'])) {
+            foreach ($input['excluded_blog_categories'] as $cat_id) {
+                $cat_id = absint($cat_id);
+                if ($cat_id > 0 && !in_array($cat_id, $selected_ids, true)) {
+                    $selected_ids[] = $cat_id;
+                }
+            }
+        }
+
+        // Saves an empty array [] when no checkboxes are selected (0 excluded categories).
+        $options['excluded_blog_categories'] = $selected_ids;
+    }
+
     return $options;
 }
 
@@ -189,6 +205,7 @@ function swu_render_settings_page()
         'menu-order' => 'Admin menu order',
         'local-fonts' => 'Local fonts',
         'disable-comments' => 'Disable comments',
+        'blog-categories' => 'Blog categories',
     ];
 
     $active_tab = isset($_GET['tab'])
@@ -230,6 +247,8 @@ function swu_render_settings_page()
                 require SWU_PATH . 'modules/admin/settings/menu-order.php';
             } elseif ($active_tab === 'disable-comments') {
                 require SWU_PATH . 'modules/admin/settings/disable-comments.php';
+            } elseif ($active_tab === 'blog-categories') {
+                require SWU_PATH . 'modules/admin/settings/blog-categories.php';
             }
             ?>
 

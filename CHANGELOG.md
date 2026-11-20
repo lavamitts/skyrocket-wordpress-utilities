@@ -131,3 +131,11 @@ Provides shortcodes for displaying the current year and date.
 
 - Additional icons (Document, email, facebook, instagram, pdf, price, video, web)
 - Move local fonts CSS folder to CSS not fonts
+
+## 1.3.1 - Include media library features
+
+- Search for a media item by its ID
+- Add in the ALT attribute and the ID into the media library list view
+- Move to media bootstrapper
+- Document the common library and add date utils
+- Exclude categories from blog

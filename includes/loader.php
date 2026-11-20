@@ -24,26 +24,22 @@ add_action('plugins_loaded', function () {
         'admin/dashboards/dashboard-editor.php',
 
         // Media library enhancements
-        'admin/media/editor-featured-image-dimensions-alt.php',
-        'admin/media/media-library-dimensions.php',
-        'admin/media/media-library-unused-media.php',
+        'admin/media/media-bootstrapper.php',
 
         // Pages and posts enhancements
-        'admin/pages-posts/admin-extend-pages-model.php',
-        'admin/pages-posts/admin-extend-posts-model.php',
-        'admin/pages-posts/admin-posts-show-feature-image.php',
-        'admin/pages-posts/editor-reading-time.php',
+        'admin/pages-posts/admin-pages-posts-bootstrapper.php',
 
         // Search enhancements
         'search/exclude-hidden-pages-from-live-search.php',
         'search/live-search-columnar-display.php',
 
         // UI enhancements
-        'ui/register-ui-css.php',
         'ui/body-add-slug-class.php',
-        'ui/local-fonts-loader.php',
-        'ui/frontend-current-date.php',
         'ui/disable-comments-runtime.php',
+        'ui/exclude-categories-from-blog.php',
+        'ui/frontend-current-date.php',
+        'ui/local-fonts-loader.php',
+        'ui/register-ui-css.php',
         'ui/swu-custom-blocks.php',
     ];
 
