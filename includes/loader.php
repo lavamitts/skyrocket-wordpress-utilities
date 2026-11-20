@@ -35,6 +35,7 @@ add_action('plugins_loaded', function () {
 
         // UI enhancements
         'ui/body-add-slug-class.php',
+        'ui/brand-trademark-enforcer.php',
         'ui/disable-comments-runtime.php',
         'ui/exclude-categories-from-blog.php',
         'ui/frontend-current-date.php',
