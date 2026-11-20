@@ -152,3 +152,8 @@ Provides shortcodes for displaying the current year and date.
 
 - Fix serious issues with brand trademark enforcer
 - No longer operates on metadata, scripts or URLs
+
+
+## 1.3.5 - Bump release
+
+- Bump release

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Skyrocket WordPress Utilities
  * Description: A collection of reusable WordPress enhancements and utilities.
- * Version: 1.3.4
+ * Version: 1.3.5
  * Author: Skyrocket Digital Development
  * Text Domain: skyrocket-wordpress-utilities
  */
@@ -10,7 +10,7 @@
 defined('ABSPATH') || exit;
 
 // Plugin version constant, used for cache-busting CSS and JavaScript.
-define('SWU_VERSION', '1.3.4');
+define('SWU_VERSION', '1.3.5');
 
 // Plugin directory path and URL.
 define('SWU_PATH', plugin_dir_path(__FILE__));
