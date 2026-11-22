@@ -53,11 +53,11 @@ function swu_custom_blocks_init(): void
 
         $block_type = register_block_type($block_path);
 
-        if ($block_type !== false) {
-            error_log('SWU registered: ' . $block_type->name);
-        } else {
-            error_log('SWU FAILED: ' . $block_path);
-        }
+        // if ($block_type !== false) {
+        //     error_log('SWU registered: ' . $block_type->name);
+        // } else {
+        //     error_log('SWU FAILED: ' . $block_path);
+        // }
     }
 }
 
