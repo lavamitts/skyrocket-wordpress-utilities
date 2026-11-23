@@ -15,7 +15,8 @@
  * - Default menu order:
  * Defines a preferred arrangement of standard WordPress admin menu
  * items, including Dashboard, WooCommerce, Products, Pages, Posts,
- * Media, Appearance, Plugins, Users, Tools and Settings.
+ * Events (when events exist), Media, Appearance, Plugins, Users, Tools
+ * and Settings.
  *
  * - Configurable order:
  * Retrieves a saved menu order from the `admin_menu_order` key
@@ -64,24 +65,56 @@
 defined('ABSPATH') || exit;
 
 /**
+ * Determine whether at least one pavilion_event post exists.
+ *
+ * @return bool
+ */
+function swu_has_pavilion_events()
+{
+    if (!post_type_exists('pavilion_event')) {
+        return false;
+    }
+
+    $events = get_posts([
+        'post_type' => 'pavilion_event',
+        'post_status' => 'any',
+        'posts_per_page' => 1,
+        'fields' => 'ids',
+        'no_found_rows' => true,
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => false,
+    ]);
+
+    return !empty($events);
+}
+
+/**
  * Return the default preferred admin menu order.
  */
 function swu_default_admin_menu_order()
 {
-    return [
+    $order = [
         'index.php',                    // Dashboard
         'woocommerce',                  // WooCommerce
         'edit.php?post_type=product',   // Products
         'edit.php?post_type=page',      // Pages
         'edit.php',                     // Posts
+    ];
+
+    if (swu_has_pavilion_events()) {
+        $order[] = 'edit.php?post_type=pavilion_event'; // Events
+    }
+
+    return array_merge($order, [
         'upload.php',                   // Media
         'themes.php',                   // Appearance
         'plugins.php',                  // Plugins
         'users.php',                    // Users
         'tools.php',                    // Tools
         'options-general.php',          // Settings
-    ];
+    ]);
 }
+
 /**
  * Get the preferred order (saved or default).
  */
@@ -123,8 +156,6 @@ function swu_filter_menu_order($current_order)
     }
 
     // Anything not explicitly ordered goes at the end, in its existing order.
-    // return array_merge($ordered, array_values($current_order));
     return array_values(array_unique(array_merge($ordered, array_values($current_order))));
 }
 add_filter('menu_order', 'swu_filter_menu_order', PHP_INT_MAX);
-

@@ -153,7 +153,11 @@ Provides shortcodes for displaying the current year and date.
 - Fix serious issues with brand trademark enforcer
 - No longer operates on metadata, scripts or URLs
 
-
 ## 1.3.5 - Bump release
 
 - Bump release
+
+## 1.3.6 - Bug fixes
+
+- Include Events high up in the menu order when Skyrocket (Pavilion) events is installed.
+- Fix issue with the brand trademark enforcer when html literals are included in script.

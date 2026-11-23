@@ -14,6 +14,8 @@
  * - Excludes elements carrying the do-not-enforce-brand-trademark class.
  * - Ignores HTML attributes, URLs, scripts, styles, JSON and SVG.
  * - Ignores hidden and non-content elements.
+ * - Masks script and style blocks during DOM parsing so inline JS template
+ *   literals and raw markup inside scripts are never altered.
  *
  * @package Skyrocket
  */
@@ -34,6 +36,53 @@ function swu_brand_trademark_terms()
         'Neuropad',
         'Feet4Life',
     ];
+}
+
+
+/**
+ * Mask raw script and style blocks with unique placeholders.
+ *
+ * Prevents DOMDocument HTML parsing and serialisation from altering
+ * inline JavaScript template literals or CSS content.
+ *
+ * @param string $html  HTML fragment.
+ * @param array  $store Reference map of placeholder => original block.
+ * @return string Masked HTML fragment.
+ */
+function swu_brand_trademark_mask_raw_blocks($html, &$store)
+{
+    $store = [];
+
+    $pattern = '/<(script|style)\b[^>]*>.*?<\/\1\s*>/is';
+
+    $masked = preg_replace_callback(
+        $pattern,
+        static function ($matches) use (&$store) {
+            $token = 'SWURAWBLOCKTOKEN' . count($store) . 'ENDTOKEN';
+            $store[$token] = $matches[0];
+            return $token;
+        },
+        $html
+    );
+
+    return $masked ?? $html;
+}
+
+
+/**
+ * Restore masked script and style blocks.
+ *
+ * @param string $html  Processed HTML fragment.
+ * @param array  $store Map of placeholder => original block.
+ * @return string Restored HTML fragment.
+ */
+function swu_brand_trademark_restore_raw_blocks($html, $store)
+{
+    if (empty($store)) {
+        return $html;
+    }
+
+    return strtr($html, $store);
 }
 
 
@@ -411,6 +460,9 @@ function swu_brand_trademark_process_body($html)
         return $html;
     }
 
+    $masked_blocks = [];
+    $prepared_html = swu_brand_trademark_mask_raw_blocks($html, $masked_blocks);
+
     // Create an isolated document fragment.
     $dom = new DOMDocument('1.0', 'UTF-8');
 
@@ -418,7 +470,7 @@ function swu_brand_trademark_process_body($html)
 
     $loaded = $dom->loadHTML(
         '<?xml encoding="UTF-8"><div id="swu-brand-trademark-wrapper">' .
-        $html .
+        $prepared_html .
         '</div>',
         LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
     );
@@ -455,7 +507,7 @@ function swu_brand_trademark_process_body($html)
         $output .= $dom->saveHTML($child);
     }
 
-    return $output;
+    return swu_brand_trademark_restore_raw_blocks($output, $masked_blocks);
 }
 
 
