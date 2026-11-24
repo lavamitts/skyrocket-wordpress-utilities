@@ -161,3 +161,7 @@ Provides shortcodes for displaying the current year and date.
 
 - Include Events high up in the menu order when Skyrocket (Pavilion) events is installed.
 - Fix issue with the brand trademark enforcer when html literals are included in script.
+
+## 1.3.7 - Search pages and posts by ID
+
+- Search pages and posts by ID

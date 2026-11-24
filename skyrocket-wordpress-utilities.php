@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Skyrocket WordPress Utilities
  * Description: A collection of reusable WordPress enhancements and utilities.
- * Version: 1.3.6
+ * Version: 1.3.7
  * Author: Skyrocket Digital Development
  * Text Domain: skyrocket-wordpress-utilities
  */
