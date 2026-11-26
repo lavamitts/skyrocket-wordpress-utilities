@@ -527,27 +527,26 @@ function swu_enforce_brand_trademarks($html)
     if (
         !is_string($html) ||
         $html === '' ||
-        !str_contains($html, '<body')
+        stripos($html, '<body') === false
     ) {
         return $html;
     }
 
-    // Isolate the body contents.
-    $result = preg_replace_callback(
-        '/(<body\b[^>]*>)(.*?)(<\/body\s*>)/is',
-        static function ($matches) {
+    $body_open_start = stripos($html, '<body');
+    $body_open_end = $body_open_start !== false ? strpos($html, '>', $body_open_start) : false;
+    $body_close_start = $body_open_end !== false ? strripos($html, '</body>', $body_open_end) : false;
 
-            return (
-                $matches[1] .
-                swu_brand_trademark_process_body($matches[2]) .
-                $matches[3]
-            );
-        },
-        $html,
-        1
-    );
+    if ($body_open_end === false || $body_close_start === false) {
+        return $html;
+    }
 
-    return $result ?? $html;
+    $before_and_open = substr($html, 0, $body_open_end + 1);
+    $body_inner = substr($html, $body_open_end + 1, $body_close_start - ($body_open_end + 1));
+    $close_and_after = substr($html, $body_close_start);
+
+    return $before_and_open
+        . swu_brand_trademark_process_body($body_inner)
+        . $close_and_after;
 }
 
 

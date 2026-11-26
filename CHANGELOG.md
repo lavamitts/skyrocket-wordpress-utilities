@@ -169,3 +169,7 @@ Provides shortcodes for displaying the current year and date.
 ## 1.3.8 - Add in 10-minute screening test to brand enforcement
 
 - Add in 10-minute screening test to brand enforcement
+
+## 1.3.9 - Brand enforcer plus custom HTML blocks
+
+- Brand enforcer works now with custom HTML blocks
