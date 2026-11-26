@@ -165,3 +165,7 @@ Provides shortcodes for displaying the current year and date.
 ## 1.3.7 - Search pages and posts by ID
 
 - Search pages and posts by ID
+
+## 1.3.8 - Add in 10-minute screening test to brand enforcement
+
+- Add in 10-minute screening test to brand enforcement

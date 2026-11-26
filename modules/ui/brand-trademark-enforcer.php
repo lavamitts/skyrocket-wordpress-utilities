@@ -35,6 +35,7 @@ function swu_brand_trademark_terms()
         'Sudopad',
         'Neuropad',
         'Feet4Life',
+        '10-minute screening test',
     ];
 }
 
