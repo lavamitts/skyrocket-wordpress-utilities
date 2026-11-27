@@ -76,8 +76,26 @@ add_filter('comments_array', function ($comments, $post_id) {
 }, 10, 2);
 
 // Prevent WP_Query from pre-fetching comment counts / threads where possible.
+// add_filter('comments_pre_query', function ($comments, $query) {
+//     return swu_is_comments_disabled() ? [] : $comments;
+// }, 10, 2);
+
+// Prevent ordinary comment queries when comments are disabled,
+// but preserve WooCommerce product review queries.
 add_filter('comments_pre_query', function ($comments, $query) {
-    return swu_is_comments_disabled() ? [] : $comments;
+    if (!swu_is_comments_disabled()) {
+        return $comments;
+    }
+
+    // Never interfere with WooCommerce product review queries.
+    if (
+        isset($query->query_vars['post_type']) &&
+        'product' === $query->query_vars['post_type']
+    ) {
+        return $comments;
+    }
+
+    return [];
 }, 10, 2);
 
 // Block direct comment submission attempts (wp-comments-post.php).

@@ -1,7 +1,7 @@
 <?php
 /**
  * Module Name: Live Search Columns
- * Description: Provides grouped Blocksy live search results for posts, pages and Pavilion Events, including dedicated styling, JavaScript and REST API configuration.
+ * Description: Provides grouped Blocksy live search results for WooCommerce products, pages, posts and Pavilion Events, including dedicated styling, JavaScript and REST API configuration.
  *
  * Integrates with Blocksy's live search functionality to display
  * search results grouped by content type, with configurable result
@@ -13,17 +13,17 @@
  * Features:
  *
  * - Grouped search results:
- *   Configures separate result groups for Posts, Pages and Events.
+ *   Configures separate result groups in sequence: Products (when WooCommerce
+ *   is active), Pages, Posts, and Events (when Pavilion Events is active),
+ *   capped at 4 blocks.
  *
  * - REST API integration:
- *   Uses the WordPress REST API to retrieve results from the relevant
- *   post type endpoints.
+ *   Uses public WordPress REST API endpoints (`wp/v2`) to retrieve results
+ *   from each post type without requiring REST API consumer keys.
  *
- * - Pavilion Events integration:
- *   Adds an Events search group when the Pavilion Events post type
- *   is registered and exposed through the REST API.
- *   Automatically uses the post type's configured REST namespace
- *   and REST base.
+ * - Pavilion Events & WooCommerce integration:
+ *   Adds Products when the `product` post type is registered and REST-enabled,
+ *   and adds Events when `pavilion-event` is registered and REST-enabled.
  *
  * - Configurable result limits:
  *   Sets the maximum number of results per content type.
@@ -69,8 +69,10 @@
 
 defined('ABSPATH') || exit;
 
-// Post type slug for the Pavilion Events plugin.
+// Post type slugs for optional integrations.
+const BBC_LS_PRODUCT_POST_TYPE = 'product';
 const BBC_LS_EVENT_POST_TYPE = 'pavilion-event';
+const BBC_LS_MAX_GROUPS = 4;
 
 /**
  * Register live search functionality when Blocksy is active.
@@ -117,20 +119,37 @@ function bbc_ls_register_module()
             true
         );
 
-        $groups = [
-            [
-                'endpoint' => esc_url_raw(rest_url('wp/v2/posts')),
-                'postType' => 'post',
-                'label' => 'Posts',
-            ],
-            [
-                'endpoint' => esc_url_raw(rest_url('wp/v2/pages')),
-                'postType' => 'page',
-                'label' => 'Pages',
-            ],
+        $groups = [];
+
+        // 1. Products (when WooCommerce is active and `product` is REST-enabled).
+        // Uses the public `wp/v2/product` route instead of `wc/v3/products` (which requires API keys).
+        if (post_type_exists(BBC_LS_PRODUCT_POST_TYPE)) {
+            $product_type = get_post_type_object(BBC_LS_PRODUCT_POST_TYPE);
+
+            if ($product_type && $product_type->show_in_rest) {
+                $groups[] = [
+                    'endpoint' => esc_url_raw(rest_url('wp/v2/' . BBC_LS_PRODUCT_POST_TYPE)),
+                    'postType' => BBC_LS_PRODUCT_POST_TYPE,
+                    'label' => 'Products',
+                ];
+            }
+        }
+
+        // 2. Pages (always).
+        $groups[] = [
+            'endpoint' => esc_url_raw(rest_url('wp/v2/pages')),
+            'postType' => 'page',
+            'label' => 'Pages',
         ];
 
-        // Add Events only when the post type is registered and REST-enabled.
+        // 3. Posts (always).
+        $groups[] = [
+            'endpoint' => esc_url_raw(rest_url('wp/v2/posts')),
+            'postType' => 'post',
+            'label' => 'Posts',
+        ];
+
+        // 4. Events (when Pavilion Events is active and REST-enabled).
         if (post_type_exists(BBC_LS_EVENT_POST_TYPE)) {
             $event_type = get_post_type_object(BBC_LS_EVENT_POST_TYPE);
 
@@ -152,6 +171,9 @@ function bbc_ls_register_module()
                 ];
             }
         }
+
+        // Cap total result groups at 4.
+        $groups = array_slice($groups, 0, BBC_LS_MAX_GROUPS);
 
         $config = [
             'perType' => 5,

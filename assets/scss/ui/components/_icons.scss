@@ -22,6 +22,7 @@ $icons: (date, email, facebook, instagram, person, phone, price, stars, time, vi
 @each $icon in $icons {
     div.#{$icon},
     p.#{$icon} {
+        background-repeat: no-repeat;
         background-image: url("../../images/icons/swu-icon-#{$icon}.svg");
     }
 }

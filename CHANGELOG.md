@@ -173,3 +173,9 @@ Provides shortcodes for displaying the current year and date.
 ## 1.3.9 - Brand enforcer plus custom HTML blocks
 
 - Brand enforcer works now with custom HTML blocks
+
+## 1.4.0 - Bug fixes
+
+- Live search issues
+- Additional icons
+- Disable comments causes review issues
