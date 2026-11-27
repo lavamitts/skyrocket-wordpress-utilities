@@ -38,80 +38,80 @@ p.person {
   font-variant: small-caps;
 }
 
-div.date,
-p.date {
+div.icon.date,
+p.icon.date {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-date.svg");
 }
 
-div.email,
-p.email {
+div.icon.email,
+p.icon.email {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-email.svg");
 }
 
-div.facebook,
-p.facebook {
+div.icon.facebook,
+p.icon.facebook {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-facebook.svg");
 }
 
-div.instagram,
-p.instagram {
+div.icon.instagram,
+p.icon.instagram {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-instagram.svg");
 }
 
-div.person,
-p.person {
+div.icon.person,
+p.icon.person {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-person.svg");
 }
 
-div.phone,
-p.phone {
+div.icon.phone,
+p.icon.phone {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-phone.svg");
 }
 
-div.price,
-p.price {
+div.icon.price,
+p.icon.price {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-price.svg");
 }
 
-div.stars,
-p.stars {
+div.icon.stars,
+p.icon.stars {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-stars.svg");
 }
 
-div.time,
-p.time {
+div.icon.time,
+p.icon.time {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-time.svg");
 }
 
-div.video,
-p.video {
+div.icon.video,
+p.icon.video {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-video.svg");
 }
 
-div.web,
-p.web {
+div.icon.web,
+p.icon.web {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-web.svg");
 }
 
-div.pdf,
-p.pdf {
+div.icon.pdf,
+p.icon.pdf {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-pdf.svg");
 }
 
-div.document,
-p.document {
+div.icon.document,
+p.icon.document {
   background-repeat: no-repeat;
   background-image: url("../../images/icons/swu-icon-document.svg");
 }

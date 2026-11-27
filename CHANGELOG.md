@@ -179,3 +179,9 @@ Provides shortcodes for displaying the current year and date.
 - Live search issues
 - Additional icons
 - Disable comments causes review issues
+
+## 1.4.1 - Namespace icon classes properly
+
+- Namespace icon classes properly
+- Avoids issues with price icon showing
+- icon only shows now when combined with the "icon" class

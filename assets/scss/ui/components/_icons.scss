@@ -20,8 +20,8 @@ p.person {
 $icons: (date, email, facebook, instagram, person, phone, price, stars, time, video, web, pdf, document);
 
 @each $icon in $icons {
-    div.#{$icon},
-    p.#{$icon} {
+    div.#{"icon." + $icon},
+    p.#{"icon." + $icon} {
         background-repeat: no-repeat;
         background-image: url("../../images/icons/swu-icon-#{$icon}.svg");
     }
